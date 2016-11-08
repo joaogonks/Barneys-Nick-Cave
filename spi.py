@@ -1,10 +1,15 @@
 import spidev
 import time
+import RPi.GPIO as GPIO
 
 class AMT203():
-  def __init__(self, bus=0, deviceId=0):
+  def __init__(self, bus=0, deviceId=0, pin=3):
     self.deviceId = deviceId
     self.bus = bus
+    self.pin = pin
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(self.pin, GPIO.OUT)
+    GPIO.output(self.pin, GPIO.HIGH)
     try:
       self.spi = spidev.SpiDev()
       self.spi.open(self.bus,self.deviceId)
@@ -40,6 +45,9 @@ class AMT203():
       first_result = self.spi.xfer([0x00],0,20)
     print "Zero set was successful and the new position offset is stored in EEPROM"
     self.clean_buffer()
+    GPIO.output(self.pin, GPIO.LOW)
+    time.sleep(0.1)
+    GPIO.output(self.pin, GPIO.HIGH)
 
 
 amt = AMT203()
