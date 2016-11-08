@@ -28,8 +28,8 @@ class AMT203():
     msb_result = self.spi.xfer([0x00],0,20)
     lsb_result = self.spi.xfer([0x00],0,20)
     print "MSB: %s | LSB: %s " % (msb_result, lsb_result)
-    msb_bin = bin(msb_result[0]<<8)[2:]
-    lsb_bin = bin(lsb_result[0])[2:]
+    # msb_bin = bin(msb_result[0]<<8)[2:]
+    # lsb_bin = bin(lsb_result[0])[2:]
     final_result = (msb_result[0]<<8 | lsb_result[0])
     print "Final: ", final_result
     self.clean_buffer()
