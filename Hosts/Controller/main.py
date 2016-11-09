@@ -1,75 +1,3 @@
-###
-
-controller ideas
-
-frames, like an animation
-
-init: 
-    read abs positions of all arms
-    ? how to move safely into positions ?
-        which arms conflict?
-
-loop:
-    expand:
-        eyeball
-        -pause-
-        wooden leg
-        -pause-
-        ruffle leg
-        -pause-
-        geometric skirt
-        -pause-
-        hair sticks
-        -pause-
-        lantern
-        -pause-
-        bathmat
-        -pause-
-        birdnest
-        -pause-
-
-    contract:
-        birdnest
-        -pause-
-        bathmat
-        -pause-
-        lantern
-        -pause-
-        hair sticks
-        -pause-
-        geometric skirt
-        -pause-
-        ruffle leg
-        -pause-
-        wooden leg
-        -pause-
-        eyeball
-        -pause-
-
-what do network commands look like?
-    /hostname/arm/action
-
-    actions:
-        expand
-        contract
-        exception
-        getPosition
-            once?
-            always check for safety?
-
-how to lock down safety?
-    exception catching is nimble
-    lock all motors on fault states
-
-###
-
-
-"""
-server      
-
-incubator
-
-"""
 
 import json
 import Queue
@@ -88,61 +16,119 @@ def network_message_handler(msg):
     try:
         #print "network_message_handler", msg
         topic = msg[0]
-        host, sensor, data = yaml.safe_load(msg[1])
+        action, params = yaml.safe_load(msg[1])
         # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e
 
+class Ex():
+    def __init__(self):
+        self.exceptions = Queue.Queue(0)
+        self.ref = lambda: True
+    def setException(self, ex):
+        print "Motions Exception:", ex
+        self.exceptions.queue.put(ex)
+        self.ref()
 
-class Controller():
-    def __init__(self, host, channel):
-        self.host = host
+    def setExceptionAction(self, ref):
+        self.ref = ref
+
+    def checkException(self):
+        return False if self.exceptions.queue.qsize() == 0 else True
+
+ex = Ex()
+
+class Motion():
+    def __init__(self, motion_name):
+        self.motion_name = motion_name
         self.channel = channel
         self.position = -1
     def get_abs_position(self):
-        pass
-    def store   _abs_position(self):
-        pass
+        network.send(self.motion_name, ["get_abs_position", []])
+    def store_abs_position(self, position):
+        self.position = position
     def zero_abs_position(self):
-        pass
-    def expand(self, speed, end_pos):
-        # check 
-        pass
-    def contract(self, speed, end_pos):
-        pass
+        network.send(self.motion_name, ["zero_abs_position", []])
+    def expand(self, end_pos, speed):
+        if ex.checkException():
+            self.stop()
+        else:
+            network.send(self.motion_name, ["expand", [end_pos, speed]])
+    def contract(self, end_pos, speed):
+        if ex.checkException():
+            self.stop()
+        else:
+            network.send(self.motion_name, ["contract", [end_pos, speed]])
+    def stop(self):
+        network.send(self.motion_name, ["stop", []])
 
+motion_names = ["Bathmat","Eyeballs","Lantern","HairSticks","LotusFigure","RuffleLeg","GeoSkirt","WoodenLeg","BirdNest"]
+motions = {}
+for motion_name in motion_names:
+    motions[motion_name] = Motion(motion_name)
 
+def stopAll():
+    for motion_name in motion_names:
+        motions[motion_name].stop()
 
-controllers = {
-    "Bathmat":Controller(,),
-    "Eyeballs":Controller(,),
-    "Lantern":Controller(,),
-    "HairSticks":Controller(,),
-    "LotusFigure":Controller(,),
-    "RuffleLeg":Controller(,),
-    "GeoSkirt":Controller(,),
-    "WoodenLeg":Controller(,),
-    "BirdNest":Controller(,)
-}
-
-
-newList = map(method, objectList)
+ex.setExceptionAction(stopAll)
 
 class Animator(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.exceptions = Queue.Queue(0)
+        self.animations = {
+            "safe_expand":[],
+            "expand":[
+            ],
+            "contract":[
+            ]
+        }
+    def expand(self):
+        motions["LotusFigure"].expand(0, 100)
+        time.sleep(1)
+        motions["Eyeballs"].expand(0, 100)
+        time.sleep(1)
+        motions["WoodenLeg"].expand(0, 100)
+        time.sleep(1)
+        motions["RuffleLeg"].expand(0, 100)
+        time.sleep(1)
+        motions["GeoSkirt"].expand(0, 100)
+        time.sleep(1)
+        motions["HairSticks"].expand(0, 100)
+        time.sleep(1)
+        motions["Lantern"].expand(0, 100)
+        time.sleep(1)
+        motions["Bathmat"].expand(0, 100)
+        time.sleep(1)
+        motions["BirdNest"].expand(0, 100)
+        time.sleep(1)
 
-    def setException(self, ex):
-
-        self.exceptions.queue.put(ex)
+    def contract(self):
+        motions["LotusFigure"].contract(2000, 100)
+        time.sleep(1)
+        motions["BirdNest"].contract(2000, 100)
+        time.sleep(1)
+        motions["Bathmat"].contract(2000, 100)
+        time.sleep(1)
+        motions["Lantern"].contract(2000, 100)
+        time.sleep(1)
+        motions["HairSticks"].contract(2000, 100)
+        time.sleep(1)
+        motions["GeoSkirt"].contract(2000, 100)
+        time.sleep(1)
+        motions["RuffleLeg"].contract(2000, 100)
+        time.sleep(1)
+        motions["WoodenLeg"].contract(2000, 100)
+        time.sleep(1)        
+        motions["Eyeballs"].contract(2000, 100)
+        time.sleep(1)
 
     def run(self):
-        while self.exceptions.queue.qsize == 0:
-
-
-
-
+        while True:
+            self.expand()
+            time.sleep(5)
+            self.contract()
+            time.sleep(5)
 
 network = None
 
