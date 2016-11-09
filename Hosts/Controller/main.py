@@ -10,7 +10,7 @@ init:
         which arms conflict?
 
 loop:
-    contract:
+    expand:
         eyeball
         -pause-
         wooden leg
@@ -28,7 +28,7 @@ loop:
         birdnest
         -pause-
 
-    expand:
+    contract:
         birdnest
         -pause-
         bathmat
@@ -71,12 +71,12 @@ incubator
 
 """
 
-
+import json
+import Queue
+import settings
 import time
 import threading
-import settings
 import yaml
-import json
 
 #from thirtybirds.Logs.main import Exception_Collector
 from thirtybirds.Network.manager import init as network_init
@@ -89,6 +89,7 @@ def network_message_handler(msg):
         #print "network_message_handler", msg
         topic = msg[0]
         host, sensor, data = yaml.safe_load(msg[1])
+        # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e
 
@@ -111,10 +112,35 @@ class Controller():
         pass
 
 
-class Controllers():
-    def __init__(self, host, channel):
-        self.host = host
-        self.channel = channel
+
+controllers = {
+    "Bathmat":Controller(,),
+    "Eyeballs":Controller(,),
+    "Lantern":Controller(,),
+    "HairSticks":Controller(,),
+    "LotusFigure":Controller(,),
+    "RuffleLeg":Controller(,),
+    "GeoSkirt":Controller(,),
+    "WoodenLeg":Controller(,),
+    "BirdNest":Controller(,)
+}
+
+
+newList = map(method, objectList)
+
+class Animator(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.exceptions = Queue.Queue(0)
+
+    def setException(self, ex):
+
+        self.exceptions.queue.put(ex)
+
+    def run(self):
+        while self.exceptions.queue.qsize == 0:
+
+
 
 
 
@@ -144,7 +170,4 @@ def init(HOSTNAME):
     network.subscribe_to_topic("GeoSkirt")
     network.subscribe_to_topic("WoodenLeg")
     network.subscribe_to_topic("BirdNest")
-
-
-
 
