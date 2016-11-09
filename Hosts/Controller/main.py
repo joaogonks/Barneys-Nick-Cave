@@ -78,9 +78,8 @@ import settings
 import yaml
 import json
 
-from thirtybirds.Logs.main import Exception_Collector
+#from thirtybirds.Logs.main import Exception_Collector
 from thirtybirds.Network.manager import init as network_init
-            
 
 def network_status_handler(msg):
     print "network_status_handler", msg
@@ -93,8 +92,31 @@ def network_message_handler(msg):
     except Exception as e:
         print "exception in network_message_handler", e
 
-motions = {
-}
+
+class Controller():
+    def __init__(self, host, channel):
+        self.host = host
+        self.channel = channel
+        self.position = -1
+    def get_abs_position(self):
+        pass
+    def store   _abs_position(self):
+        pass
+    def zero_abs_position(self):
+        pass
+    def expand(self, speed, end_pos):
+        # check 
+        pass
+    def contract(self, speed, end_pos):
+        pass
+
+
+class Controllers():
+    def __init__(self, host, channel):
+        self.host = host
+        self.channel = channel
+
+
 
 network = None
 
@@ -112,6 +134,17 @@ def init(HOSTNAME):
     )
 
     network.subscribe_to_topic("system")  # subscribe to all system messages
-    network.subscribe_to_topic("motion_commands")
     network.subscribe_to_topic("exceptions")
-    
+    network.subscribe_to_topic("Bathmat")
+    network.subscribe_to_topic("Eyeballs")
+    network.subscribe_to_topic("Lantern")
+    network.subscribe_to_topic("HairSticks")
+    network.subscribe_to_topic("LotusFigure")
+    network.subscribe_to_topic("RuffleLeg")
+    network.subscribe_to_topic("GeoSkirt")
+    network.subscribe_to_topic("WoodenLeg")
+    network.subscribe_to_topic("BirdNest")
+
+
+
+
