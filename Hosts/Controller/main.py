@@ -17,7 +17,9 @@ def network_message_handler(msg):
         #print "network_message_handler", msg
         topic = msg[0]
         action, params = yaml.safe_load(msg[1])
-        # print "Exception Received:", ex
+        if topic == "exceptions":
+            ex.setException(msg[1])
+            stopAll() # because we can't call it too many times
     except Exception as e:
         print "exception in network_message_handler", e
 
@@ -27,21 +29,20 @@ class Ex():
         self.ref = lambda: True
     def setException(self, ex):
         print "Motions Exception:", ex
-        self.exceptions.queue.put(ex)
+        self.exceptions.put(ex)
         self.ref()
 
     def setExceptionAction(self, ref):
         self.ref = ref
 
-    def checkException(self):
-        return False if self.exceptions.queue.qsize() == 0 else True
+    def checkNoException(self):
+        return self.exceptions.empty()
 
 ex = Ex()
 
 class Motion():
     def __init__(self, motion_name):
         self.motion_name = motion_name
-        self.channel = channel
         self.position = -1
     def get_abs_position(self):
         network.send(self.motion_name, ["get_abs_position", []])
@@ -50,16 +51,19 @@ class Motion():
     def zero_abs_position(self):
         network.send(self.motion_name, ["zero_abs_position", []])
     def expand(self, end_pos, speed):
-        if ex.checkException():
-            self.stop()
-        else:
+        print "expand", self.motion_name, end_pos, speed
+        if ex.checkNoException():
             network.send(self.motion_name, ["expand", [end_pos, speed]])
-    def contract(self, end_pos, speed):
-        if ex.checkException():
-            self.stop()
         else:
+            self.stop()
+    def contract(self, end_pos, speed):
+        print "contract", self.motion_name, end_pos, speed
+        if ex.checkNoException():
             network.send(self.motion_name, ["contract", [end_pos, speed]])
+        else:
+            self.stop()
     def stop(self):
+        print "stop", self.motion_name
         network.send(self.motion_name, ["stop", []])
 
 motion_names = ["Bathmat","Eyeballs","Lantern","HairSticks","LotusFigure","RuffleLeg","GeoSkirt","WoodenLeg","BirdNest"]
@@ -82,7 +86,7 @@ class Animator(threading.Thread):
             ],
             "contract":[
             ]
-        }
+        }        
     def expand(self):
         motions["LotusFigure"].expand(0, 100)
         time.sleep(1)
@@ -157,3 +161,5 @@ def init(HOSTNAME):
     network.subscribe_to_topic("WoodenLeg")
     network.subscribe_to_topic("BirdNest")
 
+    animator = Animator()
+    animator.start()
