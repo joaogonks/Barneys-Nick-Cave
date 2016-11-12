@@ -18,7 +18,7 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        #print "network_message_handler", msg
+        print "network_message_handler", msg
         topic = msg[0]
         host, sensor, data = yaml.safe_load(msg[1])
         # print "Exception Received:", ex
