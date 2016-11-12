@@ -1,0 +1,124 @@
+components:
+  motor
+    piece damaged by collision
+      motor failure stops motor
+    fire
+      motor overcurrent from locked motor
+  inc encoder
+    piece damaged by collision
+      enc failure causes wrong position
+    piece damaged by acceleration
+      enc failure causes PID freakout
+    fire
+      motor overcurrent from PID freakout
+  inc encoder cable
+    piece damaged by collision
+      enc failure causes wrong position
+    piece damaged by acceleration
+      enc failure causes PID freakout
+    fire
+      motor overcurrent from PID freakout
+  abs encoder
+    piece damaged by collision
+      encoder failure causes wrong init position
+        watch for changing values while in transit?
+      encoder failure causes wrong pre-check position
+        compare abs and inc encoders
+  abs encoder cable
+    piece damaged by collision
+      encoder failure causes wrong init position
+        watch for changing values while in transit?
+      encoder failure causes wrong pre-check position
+        compare abs and inc encoders
+  abs encoder mount / chain
+    piece damaged by collision
+      encoder failure causes wrong init position
+        watch for changing values while in transit?
+      encoder failure causes wrong pre-check position
+        compare abs and inc encoders
+  controller
+    piece damaged by collision
+      ???????????
+      overshoot position
+      fail to zero properly
+      lost contact
+    piece damaged by acceleration
+      PID tuning error
+      PID compensation due to compensation without error
+    fire
+      overcurrent from closed loop "stop"
+      overcurrent from PID jitter
+  pi
+    piece damaged by collision
+      exception fails to stop controller
+        consant checks for dead-man switch
+      exception fails to start controller
+        consant checks for dead-man switch
+      failure of protections and message to auto-stop
+        consant checks for dead-man switch
+  ether cable
+    piece damaged by collision
+      command sync failure
+  5v power cable
+  24v power cable
+    fire
+      short circuit electrical fire
+  spider coupler
+    piece damaged by collision
+      loose set screw
+      structural failure
+    piece damaged by dropping
+      structural failure
+  bearings
+    piece damaged by collision
+      loosening causes ???
+    piece damaged by dropping
+      loosening causes ???
+  cam wheel
+    piece damaged by collision
+      loose set screw
+      structural failure
+    piece damaged by dropping
+      structural failure
+  cam arm joints
+    piece damaged by collision
+      structural failure
+    piece damaged by dropping
+      structural failure
+  2-bar linkage joints
+    piece damaged by collision
+      side-droop or other failure
+    piece damaged by dropping
+      structural failure
+  mounting hands
+    piece damaged by collision
+      droop or other failure
+    piece damaged by dropping
+      droop or other failure
+  ethernet hub
+    piece damaged by collision
+      bad packets cause sync trouble
+    piece damaged by acceleration
+      bad packets cause sync trouble
+  5v power supply
+    fire
+      cross circuit on open terminals
+  24v power supply
+    fire
+      overheating with disconnected fan
+      cross circuit on open terminals
+  AC power distro
+    power surge?
+
+
+hazard:
+  piece damaged by collision
+  piece damaged by acceleration
+  piece damaged by dropping
+  fire
+
+=======================================
+
+init process:
+  read data from 
+
