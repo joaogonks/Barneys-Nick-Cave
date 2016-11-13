@@ -110,9 +110,9 @@ class Controller(threading.Thread):
   def outOfBounds(self, measuered, destination, direction):
     print "BOUNDS === ", repr(measuered), repr(destination), repr(direction)
     if direction == -1:
-      return measuered >= destination
-    if direction == 1:
       return measuered <= destination
+    if direction == 1:
+      return measuered >= destination
 
   def run(self):
     while True:
