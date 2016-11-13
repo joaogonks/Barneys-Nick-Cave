@@ -122,6 +122,8 @@ class Controller(threading.Thread):
         positions_raw = self.serialDialog(cmd)
         print "positions_raw=",positions_raw
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+        measuredPosition1 = int(measuredPosition1)
+        measuredPosition2 = int(measuredPosition2)
         if channel == 1:
           self.destinationPosition1 = destinationPosition
           self.direction1 = 1 if measuredPosition1 > self.destinationPosition1 else -1
@@ -147,6 +149,8 @@ class Controller(threading.Thread):
       cmd = '?C' + '\r'
       positions_raw = self.serialDialog(cmd)
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+      measuredPosition1 = int(measuredPosition1)
+      measuredPosition2 = int(measuredPosition2)
       print measuredPosition1, measuredPosition2
       if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
         print "channel 1 out of bounds",measuredPosition1, self.destinationPosition1, self.direction1
