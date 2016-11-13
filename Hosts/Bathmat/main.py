@@ -20,7 +20,7 @@ def network_message_handler(msg):
     try:
         print "network_message_handler", msg
         topic = msg[0]
-        host, sensor, data = yaml.safe_load(msg[1])
+        cmd, params = yaml.safe_load(msg[1])
         # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e

@@ -147,8 +147,10 @@ class OutgoingMessageSpool(threading.Thread):
         while True:
             while not self.msgQueue.empty():
                 destination,cmd,params = self.msgQueue.get()
+                print "OutgoingMessageSpool 1", destination, cmd, params
                 network.send(destination, [cmd, params])
             for motion_name in motion_names:
+                print "OutgoingMessageSpool 2", destination, cmd, params
                 network.send(motion_name, ["deadman", []])
             time.sleep(self.frequency)
 
