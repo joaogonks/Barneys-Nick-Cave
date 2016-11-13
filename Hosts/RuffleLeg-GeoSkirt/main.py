@@ -111,8 +111,8 @@ class Controller(threading.Thread):
   def run(self):
     while True:
       # if is there a new moveTo command in the queue
-      while not self.msgQueue.empty():
-        channel, destinationPosition = self.msgQueue.get()
+      while not self.cmdQueue.empty():
+        channel, destinationPosition = self.cmdQueue.get()
         # read current positions
         cmd = '?C' + '\r'
         positions_raw = self.serialDialog(cmd)
