@@ -124,7 +124,7 @@ class Controller(threading.Thread):
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
         if channel == 1:
           self.destinationPosition1 = destinationPosition
-          self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
+          self.direction1 = 1 if measuredPosition1 > self.destinationPosition1 else -1
           print "channel 1 direction", self.direction1, measuredPosition1, self.destinationPosition1 
           if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
