@@ -22,15 +22,16 @@ def network_message_handler(msg):
         topic = msg[0]
         if topic == "RuffleLeg":
           action, params = yaml.safe_load(msg[1])
+
+          position = params[0]
           if action == "expand":
-            position = params[0]
             controller.moveTo(1, position)
           if action == "contract":
             controller.moveTo(1, position)
         if topic == "GeoSkirt":
           action, params = yaml.safe_load(msg[1])
+          position = params[0]
           if action == "expand":
-            position = params[0]
             controller.moveTo(2, position)
           if action == "contract":
             controller.moveTo(2, position)
