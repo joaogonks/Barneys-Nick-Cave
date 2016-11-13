@@ -20,14 +20,14 @@ def network_message_handler(msg):
     try:
         print "network_message_handler", msg
         topic = msg[0]
-        if topic = "RuffleLeg":
+        if topic == "RuffleLeg":
           action, params = yaml.safe_load(msg[1])
           if action == "expand":
             position, speed = params
             controller.moveTo(1, position)
           if action == "contract":
             controller.moveTo(1, position)
-        if topic = "GeoSkirt":
+        if topic == "GeoSkirt":
           action, params = yaml.safe_load(msg[1])
           if action == "expand":
             position, speed = params
