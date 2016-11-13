@@ -20,8 +20,16 @@ def network_message_handler(msg):
     try:
         #print "network_message_handler", msg
         topic = msg[0]
-        host, sensor, data = yaml.safe_load(msg[1])
-        # print "Exception Received:", ex
+        if topic == "LotusFigure":
+          action, params = yaml.safe_load(msg[1])
+
+          speed = params[1]
+          if action == "expand":
+            controller.moveTo(1, speed)
+          if action == "contract":
+            controller.moveTo(1, speed)
+
+          # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e
 network = None
@@ -45,9 +53,11 @@ def init(HOSTNAME):
 
 ######## MOTOR CONTROL ##########
 
-class Controller():
+class Controller(threading.Thread):
   def __init__(self, deviceId=0):
+    threading.Thread.__init__(self)
     self.deviceId = deviceId
+    self.cmdQueue = Queue.Queue()
     self.open = False
     self.devicePath = "/dev/ttyUSB" + str(deviceId)
     try:
@@ -58,24 +68,50 @@ class Controller():
         #startbits=serial.STARTBITS_ONE,
         stopbits=serial.STOPBITS_ONE,
         parity=serial.PARITY_NONE,
+        timeout=1
       )
       #self.serial.open()
       self.open = True
+
       print "Serial connected at ", self.devicePath
     except:
       self.open = False
       print("could not open device at ", self.devicePath)
-
-  def setSpeed(self, channel, rpm): 
+  
+  def serialDialog(self, msg):
     if self.open:
-      cmd = '!G ' + str(channel) + ' '+str(rpm)+'\r'
-      print cmd
-      self.serial.write(cmd)
+      #print "serialDialog msg=", msg
+      self.serial.flush()
+      self.serial.write(msg)
+      self.serial.flush()
+      resp = self.serial.readline()
+      #print "serialDialog response:" 
+      return resp
     else:
       print 'Serial not connected'
-      pass
+      return ""
+  
+  def moveTo(self, channel, speed):
+    print "moveTo=",channel, speed
+    self.cmdQueue.put([channel, speed])
+
+  def run(self):
+    while True:
+      print 101
+      while not self.cmdQueue.empty():
+        channel, destinationSpeed = self.cmdQueue.get()
+        if channel == 1:
+            cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
+          else:
+            cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
+          resp = self.serialDialog(cmd)
+
+      cmd = '?C' + '\r'
+      self.serialDialog(cmd)
+      time.sleep(0.05)
 
 controller = Controller()
+controller.start()
 
 ######## ABSOLUTE ENCODER ###########
 
