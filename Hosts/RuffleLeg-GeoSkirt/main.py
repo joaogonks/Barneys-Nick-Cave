@@ -75,7 +75,8 @@ class Controller(threading.Thread):
         bytesize=serial.EIGHTBITS,
         #startbits=serial.STARTBITS_ONE,
         stopbits=serial.STOPBITS_ONE,
-        parity=serial.PARITY_NONE
+        parity=serial.PARITY_NONE,
+        timeout=1
       )
       #self.serial.open()
       self.open = True
@@ -88,27 +89,22 @@ class Controller(threading.Thread):
     except:
       self.open = False
       print("could not open device at ", self.devicePath)
-  """
-  def setSpeed(self, channel, rpm):
+  
+  def serialDialog(self, msg):
     if self.open:
-      cmd = '!G ' + str(channel) + ' '+str(rpm)+'\r'
-      print cmd
-      self.serial.write(cmd)
+      print "serialDialog msg=", msg
+      self.serial.flush()
+      self.serial.write(msg)
+      self.serial.flush()
+      resp = self.serial.readline()
+      print "serialDialog response=", resp
     else:
       print 'Serial not connected'
-      pass
-  """
+      return ""
+  
   def moveTo(self, channel, position):
     print "moveTo=",channel, position
     self.cmdQueue.put([channel, position])
-    """
-    if channel == 1:
-      self.destination1 = int(position)
-    if channel == 2:
-      self.destination2 = int(position)
-      cmd = '!G ' + str(channel) + ' '+str(self.speed) + '\r'
-      self.cmdQueue.put(cmd)
-    """
   def run(self):
     while True:
       print 101
@@ -119,10 +115,7 @@ class Controller(threading.Thread):
         # read current positions
         cmd = '?C' + '\r'
         # write to serial
-        self.serial.write(cmd)
-        self.serial.flush()
-        # read resp from serial
-        positions_raw = self.serial.readline()
+        positions_raw = self.serialDialog(cmd)
         print "positions_raw=",positions_raw
         #positions_raw = self.serialDialog(cmd)
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
@@ -136,11 +129,8 @@ class Controller(threading.Thread):
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
-          self.serial.write(cmd)
-          self.serial.flush()
-          # read resp from serial
-          resp = self.serial.readline()
-          print "resp=",resp
+          #resp = self.serialDialog(cmd)
+          #print "resp=",resp
         if channel == 2:
           print 104
           # set destinations
@@ -151,23 +141,15 @@ class Controller(threading.Thread):
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
-          self.serial.write(cmd)
-          self.serial.flush()
-          # read resp from serial
-          resp = self.serial.readline()
+          #resp = self.serialDialog(cmd)
           print "resp=",resp
       print 106
       # read current positions
       cmd = '?C' + '\r'
       print 107
-      # write to serial
-      self.serial.write(cmd)
-      self.serial.flush()
+      positions_raw = self.serialDialog(cmd)
       print 108
       # read resp from serial
-      positions_raw = self.serial.readline()
-      self.serial.flush()
-      print 109
       print "positions_raw=",positions_raw
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       # channel 1
@@ -178,10 +160,11 @@ class Controller(threading.Thread):
           # send new speed of 0
           cmd = '!G ' + str(1) + ' '+str(0) + '\r'
           # write to serial
-          self.serial.write(cmd)
-          self.serial.flush()
+          resp = self.serialDialog(cmd)
+          #self.serial.write(cmd)
+          #self.serial.flush()
           # read resp from serial
-          resp = self.serial.readline()
+          #resp = self.serial.readline()
           print "resp=",resp
       if self.direction1 == -1:
         if measuredPosition1 < self.destinationPosition1:
@@ -189,10 +172,7 @@ class Controller(threading.Thread):
           # send new speed of 0
           cmd = '!G ' + str(1) + ' '+str(0) + '\r'
           # write to serial
-          self.serial.write(cmd)
-          self.serial.flush()
-          # read resp from serial
-          resp = self.serial.readline()
+          resp = self.serialDialog(cmd)
           print "resp=",resp
 
       # channel 2
@@ -203,10 +183,7 @@ class Controller(threading.Thread):
           # send new speed of 0
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
-          self.serial.write(cmd)
-          self.serial.flush()
-          # read resp from serial
-          resp = self.serial.readline()
+          resp = self.serialDialog(cmd)
           print "resp=",resp
       if self.direction2 == -1:
         if measuredPosition2 < self.destinationPosition2:
@@ -214,10 +191,8 @@ class Controller(threading.Thread):
           # send new speed of 0
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
-          self.serial.write(cmd)
-          self.serial.flush()
-          # read resp from serial
-          resp = self.serial.readline()
+          # write to serial
+          resp = self.serialDialog(cmd)
           print "resp=",resp
       time.sleep(0.05)
 
