@@ -136,6 +136,26 @@ class Animator(threading.Thread):
 
 network = None
 
+class OutgoingMessageSpool(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.msgQueue = Queue.Queue()
+        self.frequency = 1.0
+    def addMessage(self,destination,msg):
+        self.msgQueue.put([destination,cmd,params])
+    def run(self):
+        while True:
+            while not self.msgQueue.empty():
+                destination,cmd,params = self.msgQueue.get()
+                network.send(destination, [cmd, params])
+            for motion_name in motion_names:
+                network.send(motion_name, ["deadman", []])
+            time.sleep(self.frequency)
+
+outgoingmessagespool = OutgoingMessageSpool()
+outgoingmessagespool.run()
+
+
 def init(HOSTNAME):
     global network
     network = network_init(

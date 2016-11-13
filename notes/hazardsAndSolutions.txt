@@ -2,40 +2,107 @@ components:
   motor
     piece damaged by collision
       motor failure stops motor
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
     fire
       motor overcurrent from locked motor
+        ?????? DETECT LOCK WITH STALL + HIGH CURRENT ??????
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR - WHEN TO USE EMERGENCY STOP?
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   inc encoder
     piece damaged by collision
       enc failure causes wrong position
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
     piece damaged by acceleration
       enc failure causes PID freakout
+        ?????? DETECT PID FREAKOUT WITH HIGH CURRENT + ??????
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR - USE EMERGENCY STOP?
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
     fire
       motor overcurrent from PID freakout
+        ?????? DETECT LOCK WITH STALL + HIGH CURRENT ??????
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR - WHEN TO USE EMERGENCY STOP?
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   inc encoder cable
     piece damaged by collision
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
       enc failure causes wrong position
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
     piece damaged by acceleration
       enc failure causes PID freakout
+        ?????? DETECT PID FREAKOUT WITH HIGH CURRENT + ??????
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR - USE EMERGENCY STOP?
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
     fire
       motor overcurrent from PID freakout
+        ?????? DETECT PID FREAKOUT WITH HIGH CURRENT + ??????
+        CONTROLLER: LOOP ERROR DETECTION STOPS MOTOR - USE EMERGENCY STOP?
+        CONTROLLER->HOST: REPORT ERROR IN STATUS QUERY
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   abs encoder
     piece damaged by collision
       encoder failure causes wrong init position
-        watch for changing values while in transit?
+        HOST: WHEN ZEROING, MONITOR ABS ENCODER FOR CHANGING VALUES
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        !!!! THIS WILL ONLY CATCH GROSS ERRORS
+        HOST: COMPARE ENCODER READINGS
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
       encoder failure causes wrong pre-check position
-        compare abs and inc encoders
+        PI->CONTROLLER: REQUEST INC POSITION FROM CONTROLLER
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        ABS ENCODER->HOST: RESPOND WITH ABS POSTION  
+        CONTROLLER->HOST: RESPOND WITH INC POSTION  
+        HOST: COMPARE ENCODER READINGS
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   abs encoder cable
     piece damaged by collision
-      encoder failure causes wrong init position
-        watch for changing values while in transit?
-      encoder failure causes wrong pre-check position
-        compare abs and inc encoders
+      encoder cable failure causes wrong init position
+        HOST: WHEN ZEROING, MONITOR ABS ENCODER FOR CHANGING VALUES
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        !!!! THIS WILL ONLY CATCH GROSS ERRORS
+        HOST: COMPARE ENCODER READINGS
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
+      encoder cable failure causes wrong pre-check position
+        PI->CONTROLLER: REQUEST INC POSITION FROM CONTROLLER
+        HOST->ABS ENCODER: REQUEST ABS POSITION FROM ABS ENCODER
+        ABS ENCODER->HOST: RESPOND WITH ABS POSTION
+        CONTROLLER->HOST: RESPOND WITH INC POSTION  
+        HOST: COMPARE ENCODER READINGS
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   abs encoder mount / chain
     piece damaged by collision
-      encoder failure causes wrong init position
-        watch for changing values while in transit?
-      encoder failure causes wrong pre-check position
-        compare abs and inc encoders
+      loose chain causes inaccurate readings:
+        !!!! TIGHTEN ALL CHAINS !!!!
+      loose set screws in sprocket cause incorrect readings:
+        !!!! TIGHTEN AND LOC-TITE SET SCREWS !!!!
   controller
     piece damaged by collision
       ???????????
@@ -50,67 +117,85 @@ components:
       overcurrent from PID jitter
   pi
     piece damaged by collision
-      exception fails to stop controller
-        consant checks for dead-man switch
-      exception fails to start controller
-        consant checks for dead-man switch
-      failure of protections and message to auto-stop
-        consant checks for dead-man switch
+      any exception:
+        HOST->SET GLOBAL DEADMAN VALUE TO ERROR MESSAGE
+        HOST->SERVER: SEND ERROR IN DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   ether cable
     piece damaged by collision
       command sync failure
+        HOST->SERVER: FAILURE TO SEND DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   5v power cable
+    piece damaged by collision
+        HOST->SERVER: FAILURE TO SEND DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
+    fire
+      short circuit electrical fire
+      !!!! COVER ALL TERMINALS ON POWER SUPPLIES
   24v power cable
     fire
       short circuit electrical fire
+      !!!! COVER ALL TERMINALS ON POWER SUPPLIES
   spider coupler
     piece damaged by collision
       loose set screw
+        !!!! TIGHTEN AND LOC-TITE SET SCREWS !!!!
       structural failure
+        !!!! NO FORESEEN SOLUTION !!!!
     piece damaged by dropping
-      structural failure
-  bearings
+        !!!! NO FORESEEN SOLUTION !!!!
+  pillow blocks
     piece damaged by collision
-      loosening causes ???
+      loosening 
+        !!!! TIGHTEN AND LOC-TITE BOLTS !!!!
     piece damaged by dropping
-      loosening causes ???
+      loosening causes 
+        !!!! TIGHTEN AND LOC-TITE BOLTS !!!!
   cam wheel
     piece damaged by collision
       loose set screw
+        !!!! TIGHTEN AND LOC-TITE BOLTS !!!!
       structural failure
+        !!!! NO FORESEEN SOLUTION !!!!
     piece damaged by dropping
       structural failure
+        !!!! NO FORESEEN SOLUTION !!!!
   cam arm joints
     piece damaged by collision
       structural failure
+        !!!! NO FORESEEN SOLUTION !!!!
     piece damaged by dropping
       structural failure
+        !!!! NO FORESEEN SOLUTION !!!!
   2-bar linkage joints
     piece damaged by collision
       side-droop or other failure
+        !!!! NO FORESEEN SOLUTION !!!!
     piece damaged by dropping
       structural failure
+        !!!! NO FORESEEN SOLUTION !!!!
   mounting hands
     piece damaged by collision
       droop or other failure
+        !!!! NO FORESEEN SOLUTION !!!!
     piece damaged by dropping
       droop or other failure
+        !!!! NO FORESEEN SOLUTION !!!!
   ethernet hub
     piece damaged by collision
       bad packets cause sync trouble
-    piece damaged by acceleration
-      bad packets cause sync trouble
+        HOST->SERVER: FAILURE TO SEND DEADMAN MESSAGE
+        SERVER->ALL_PIS: SEND ERROR IN DEADMAN MESSAGE or STOP DEADMAN MESSAGE
   5v power supply
     fire
       cross circuit on open terminals
+        !!!! COVER ALL TERMINALS !!!!
   24v power supply
     fire
       overheating with disconnected fan
       cross circuit on open terminals
-  AC power distro
-    power surge?
-
-
+        !!!! COVER ALL TERMINALS !!!!
 hazard:
   piece damaged by collision
   piece damaged by acceleration
@@ -119,6 +204,95 @@ hazard:
 
 =======================================
 
+
 init process:
-  read data from 
+  server:
+    send init command to each host
+  each host:
+    pi:
+      read position from abs encoder
+      send position to server
+  server:
+    collect all positions
+    calculate safe order of expansion
+    send intitial_expand command to each host with paramater for distance
+  each host:
+    pi:
+
+    move distance ( in expand direction )
+    double-check with abs and inc encoder
+    [ send current and fault data ]
+    send confirmation of initial_expand
+  server:
+    collect all initial_expand confirmations
+    send zero_inc_encoder command to all hosts
+  each host:
+    zero incremental encoder
+    read encoder value and verify it is ( close enough to ) zero
+    send confirmation to server, with inc and abs encoder values
+  server:
+    collect zero_inc_encoder confirmations
+  READY???  ANYTHING ELSE???
+
+expand/contract process:
+  server:
+    send check_if_ready command to all hosts
+  each host:
+    check that encoder values correspond
+    check for any motor faults
+    ??? any othe tests ???
+    send confirmations to server
+  server
+    collect all check_if_ready confirmations 
+    start animation, sending timed series of expand/contract commands to each host with speed and max position
+    listen for deadmanswitch messages from each host
+  each host:
+    upon recieving expand/contract command send command to motor controller
+      assuming mode is "closed loop speed position":
+        check motor for faults
+        check abs and inc encoder positions
+        check encoder values correspond and match expectations
+        send motion command to controller
+        poll inc encoder and stop at correct time
+          Can this be precise given the delays in polling?
+          Can this be set up some other way in the controller?  Min/Max values?
+
+        stop conditions for pi:
+          stop message from server
+          loss of deadmanswitch signal from the server
+          encoder value conflict
+        stop conditions for controller:
+          loss of serial safety signal from the pi
+          inc encoder passes beyond min/max values
+
+in case of exceptions:
+  
+====================================
+
+deadman switches:
+
+  controller->host:
+    replies to noop/status queries ( ack / nak ), or whatever equialent
+
+  host->controller:
+    serial safety setting on controller
+
+  host->server:
+    deadman switch messages
+
+  host->server
+    deadman switch messages
+
+can the system run at a time resolution of 0.1s?
+
+
+
+
+
+
+
+
+
+
+
 
