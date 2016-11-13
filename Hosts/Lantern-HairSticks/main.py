@@ -98,7 +98,7 @@ class Controller(threading.Thread):
       self.serial.flush()
       resp = self.serial.readline()
       print "serialDialog response:" 
-      print resp
+      return resp
     else:
       print 'Serial not connected'
       return ""
@@ -156,7 +156,7 @@ class Controller(threading.Thread):
       measuredPosition1 = 0
       measuredPosition2 = 0
 
-      
+
       try:
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       except Exception as e:
