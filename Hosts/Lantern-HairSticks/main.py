@@ -18,7 +18,7 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        print "network_message_handler", msg
+        #print "network_message_handler", msg
         topic = msg[0]
         if topic == "HairSticks":
           action, params = yaml.safe_load(msg[1])
@@ -125,8 +125,8 @@ class Controller(threading.Thread):
           # set destinations
           self.destinationPosition1 = destinationPosition
           # calculate direction and save
-          self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
-          speed = int(self.direction1 * 30)
+          self.direction1 = -1 if measuredPosition1 < self.destinationPosition1 else 1
+          speed = int(self.direction1 * 15)
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
@@ -137,7 +137,7 @@ class Controller(threading.Thread):
           # set destinations
           self.destinationPosition1 = destinationPosition
           # calculate direction and save
-          self.direction1 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+          self.direction1 = -1 if measuredPosition2 < self.destinationPosition2 else 1
           speed = int(self.direction1 * 30)
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
