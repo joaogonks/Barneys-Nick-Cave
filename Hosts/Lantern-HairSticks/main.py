@@ -106,12 +106,18 @@ class Controller(threading.Thread):
   def moveTo(self, channel, position):
     print "moveTo=",channel, position
     self.cmdQueue.put([channel, position])
+
+  def outOfBounds(self, measuered, destination, direction):
+    if direction == 1:
+      return measuered >= destination
+    if direction == -1:
+      return measuered <= destination
+
   def run(self):
     while True:
       print 101
       # if is there a new moveTo command in the queue
       while not self.cmdQueue.empty():
-        print 102
         channel, destinationPosition = self.cmdQueue.get()
         # read current positions
         cmd = '?C' + '\r'
@@ -121,29 +127,23 @@ class Controller(threading.Thread):
         #positions_raw = self.serialDialog(cmd)
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
         if channel == 1:
-          print 103
-          # set destinations
           self.destinationPosition1 = destinationPosition
-          # calculate direction and save
           self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
-          speed = int(self.direction1 * 15)
-          # generate serial command
-          cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
-          # write to serial
+          if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
+            cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
+          else:
+            speed = int(self.direction1 * 15)
+            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           resp = self.serialDialog(cmd)
-          #print "resp=",resp
         if channel == 2:
-          print 104
-          # set destinations
           self.destinationPosition2 = destinationPosition
-          # calculate direction and save
           self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
-          speed = int(self.direction2 * 30)
-          # generate serial command
-          cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
-          # write to serial
+          if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
+            cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
+          else:
+            speed = int(self.direction2 * 30)
+            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           resp = self.serialDialog(cmd)
-          #print "resp=",resp
       print 106
       # read current positions
       cmd = '?C' + '\r'
@@ -156,42 +156,18 @@ class Controller(threading.Thread):
       print measuredPosition1, measuredPosition2
       # channel 1
       # if encoder is past/near destination
-      if self.direction1 == 1:
-        if measuredPosition1 > self.destinationPosition1:
-          print "channel 1 endpoint, direction 1", measuredPosition1, self.destinationPosition1
-          # send new speed of 0
-          cmd = '!G ' + str(1) + ' '+str(0) + '\r'
-          # write to serial
-          resp = self.serialDialog(cmd)
-          #resp = self.serial.readline()
-          print "resp=",resp
-      if self.direction1 == -1:
-        if measuredPosition1 < self.destinationPosition1:
-          print "channel 1 endpoint, direction -1", measuredPosition1, self.destinationPosition1
-          # send new speed of 0
-          cmd = '!G ' + str(1) + ' '+str(0) + '\r'
-          # write to serial
-          resp = self.serialDialog(cmd)
-          print "resp=",resp
+      if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
+        print "channel 1 out of bounds",measuredPosition1, self.destinationPosition1, self.direction1
+        cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+        resp = self.serialDialog(cmd)
+        print "resp=",resp
 
-      # channel 2
-      # if encoder is past/near destination
-      if self.direction2 == 1:
-        if measuredPosition2 > self.destinationPosition2:
-          print "channel 2 endpoint, direction 1", measuredPosition2, self.destinationPosition2
-          # send new speed of 0
-          cmd = '!G ' + str(2) + ' '+str(0) + '\r'
-          # write to serial
-          resp = self.serialDialog(cmd)
-          print "resp=",resp
-      if self.direction2 == -1:
-        if measuredPosition2 < self.destinationPosition2:
-          print "channel 2 endpoint, direction -1", measuredPosition2, self.destinationPosition2
-          # send new speed of 0
-          cmd = '!G ' + str(2) + ' '+str(0) + '\r'
-          # write to serial
-          resp = self.serialDialog(cmd)
-          print "resp=",resp
+      if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
+        print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
+        cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+        resp = self.serialDialog(cmd)
+        print "resp=",resp
+
       time.sleep(0.05)
 
         # read any fault states
