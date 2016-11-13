@@ -46,7 +46,7 @@ def init(HOSTNAME):
 
 ######## MOTOR CONTROL ##########
 
-class Controller(threading):
+class Controller(threading.Thread):
   def __init__(self, deviceId=0):
     threading.Thread.__init__(self)
     self.deviceId = deviceId
