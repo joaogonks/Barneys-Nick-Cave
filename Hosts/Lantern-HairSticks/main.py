@@ -135,7 +135,7 @@ class Controller(threading.Thread):
         print cmd
         if channel == 2:
           self.destinationPosition2 = destinationPosition
-          self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+          self.direction2 = 1 if measuredPosition2 > self.destinationPosition2 else -1
           print "channel 2 direction", self.direction2, measuredPosition2, self.destinationPosition2
           if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
