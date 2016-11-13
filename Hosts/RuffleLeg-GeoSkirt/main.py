@@ -76,7 +76,7 @@ class Controller(threading.Thread):
         #startbits=serial.STARTBITS_ONE,
         stopbits=serial.STOPBITS_ONE,
         parity=serial.PARITY_NONE,
-        timeout=0
+        timeout=1
       )
       #self.serial.open()
       self.open = True
@@ -121,6 +121,7 @@ class Controller(threading.Thread):
         cmd = '?C' + '\r'
         # write to serial
         self.serial.write(cmd)
+        self.serial.flush()
         # read resp from serial
         positions_raw = self.serial.readline()
         print "positions_raw=",positions_raw
@@ -137,6 +138,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
           self.serial.write(cmd)
+          self.serial.flush()
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
@@ -151,6 +153,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
           self.serial.write(cmd)
+          self.serial.flush()
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
@@ -160,9 +163,11 @@ class Controller(threading.Thread):
       print 107
       # write to serial
       self.serial.write(cmd)
+      self.serial.flush()
       print 108
       # read resp from serial
       positions_raw = self.serial.readline()
+      self.serial.flush()
       print 109
       print "positions_raw=",positions_raw
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
@@ -175,6 +180,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(1) + ' '+str(0) + '\r'
           # write to serial
           self.serial.write(cmd)
+          self.serial.flush()
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
@@ -185,6 +191,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(1) + ' '+str(0) + '\r'
           # write to serial
           self.serial.write(cmd)
+          self.serial.flush()
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
@@ -198,6 +205,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
           self.serial.write(cmd)
+          self.serial.flush()
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
@@ -208,6 +216,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
           self.serial.write(cmd)
+          self.serial.flush()
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
