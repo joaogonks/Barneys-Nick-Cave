@@ -130,7 +130,7 @@ class Controller(threading.Thread):
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
-          #resp = self.serialDialog(cmd)
+          resp = self.serialDialog(cmd)
           #print "resp=",resp
         if channel == 2:
           print 104
@@ -142,7 +142,7 @@ class Controller(threading.Thread):
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
-          #resp = self.serialDialog(cmd)
+          resp = self.serialDialog(cmd)
           #print "resp=",resp
       print 106
       # read current positions
@@ -186,7 +186,7 @@ class Controller(threading.Thread):
           print "resp=",resp
       if self.direction2 == -1:
         if measuredPosition2 < self.destinationPosition2:
-          print "channel 1 endpoint, direction -1", measuredPosition2, self.destinationPosition2
+          print "channel 2 endpoint, direction -1", measuredPosition2, self.destinationPosition2
           # send new speed of 0
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
