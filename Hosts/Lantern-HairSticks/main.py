@@ -178,7 +178,7 @@ class Controller(threading.Thread):
       # if encoder is past/near destination
       if self.direction2 == 1:
         if measuredPosition2 > self.destinationPosition2:
-          print "channel 2 endpoint, direction 1", measuredPosition1, self.destinationPosition1
+          print "channel 2 endpoint, direction 1", measuredPosition2, self.destinationPosition2
           # send new speed of 0
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
