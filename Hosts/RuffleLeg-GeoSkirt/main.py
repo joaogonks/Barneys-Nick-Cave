@@ -18,7 +18,7 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        #print "network_message_handler", msg
+        print "network_message_handler", msg
         topic = msg[0]
         if topic == "RuffleLeg":
           action, params = yaml.safe_load(msg[1])
@@ -142,7 +142,7 @@ class Controller(threading.Thread):
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
           #resp = self.serialDialog(cmd)
-          print "resp=",resp
+          #print "resp=",resp
       print 106
       # read current positions
       cmd = '?C' + '\r'
