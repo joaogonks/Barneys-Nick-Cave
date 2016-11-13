@@ -26,8 +26,11 @@ def network_message_handler(msg):
         print "exception in network_message_handler", e
 network = None
 
+print "aaaaa"
+
 def init(HOSTNAME):
     global network
+    print "bbbbb"
     network = network_init(
         hostname=HOSTNAME,
         role="client",
