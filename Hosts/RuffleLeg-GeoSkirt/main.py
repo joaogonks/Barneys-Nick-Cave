@@ -75,8 +75,7 @@ class Controller(threading.Thread):
         bytesize=serial.EIGHTBITS,
         #startbits=serial.STARTBITS_ONE,
         stopbits=serial.STOPBITS_ONE,
-        parity=serial.PARITY_NONE,
-        timeout=1
+        parity=serial.PARITY_NONE
       )
       #self.serial.open()
       self.open = True
@@ -132,7 +131,7 @@ class Controller(threading.Thread):
           # set destinations
           self.destinationPosition1 = destinationPosition
           # calculate direction and save
-          self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
+          self.direction1 = -11 if measuredPosition1 < self.destinationPosition1 else 1
           speed = int(self.direction1 * 30)
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
@@ -147,7 +146,7 @@ class Controller(threading.Thread):
           # set destinations
           self.destinationPosition1 = destinationPosition
           # calculate direction and save
-          self.direction1 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+          self.direction1 = -1 if measuredPosition2 < self.destinationPosition2 else 1
           speed = int(self.direction1 * 30)
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
