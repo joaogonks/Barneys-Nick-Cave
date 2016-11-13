@@ -162,20 +162,17 @@ class Controller(threading.Thread):
           # send new speed of 0
           cmd = '!G ' + str(1) + ' '+str(0) + '\r'
           # write to serial
-          #resp = self.serialDialog(cmd)
-          #self.serial.write(cmd)
-          #self.serial.flush()
-          # read resp from serial
+          resp = self.serialDialog(cmd)
           #resp = self.serial.readline()
-          #print "resp=",resp
+          print "resp=",resp
       if self.direction1 == -1:
         if measuredPosition1 < self.destinationPosition1:
           print "channel 1 endpoint, direction -1", measuredPosition1, self.destinationPosition1
           # send new speed of 0
           cmd = '!G ' + str(1) + ' '+str(0) + '\r'
           # write to serial
-          #resp = self.serialDialog(cmd)
-          #print "resp=",resp
+          resp = self.serialDialog(cmd)
+          print "resp=",resp
 
       # channel 2
       # if encoder is past/near destination
@@ -185,17 +182,16 @@ class Controller(threading.Thread):
           # send new speed of 0
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
-          #resp = self.serialDialog(cmd)
-          #print "resp=",resp
+          resp = self.serialDialog(cmd)
+          print "resp=",resp
       if self.direction2 == -1:
         if measuredPosition2 < self.destinationPosition2:
           print "channel 1 endpoint, direction -1", measuredPosition2, self.destinationPosition2
           # send new speed of 0
           cmd = '!G ' + str(2) + ' '+str(0) + '\r'
           # write to serial
-          # write to serial
-          #resp = self.serialDialog(cmd)
-          #print "resp=",resp
+          resp = self.serialDialog(cmd)
+          print "resp=",resp
       time.sleep(0.05)
 
         # read any fault states
