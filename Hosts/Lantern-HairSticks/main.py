@@ -133,15 +133,19 @@ class Controller(threading.Thread):
           if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
           else:
-            cmd = '!G ' + str(channel) + ' '+str(-15) + '\r'
+            speed = int(self.direction1 * 15)
+            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           resp = self.serialDialog(cmd)
+        print cmd
         if channel == 2:
           self.destinationPosition2 = destinationPosition
           self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
           if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
           else:
-            cmd = '!G ' + str(channel) + ' '+str(30) + '\r'
+            speed = int(self.direction2 * 30)
+            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
+          print cmd
           resp = self.serialDialog(cmd)
       print 106
       # read current positions
