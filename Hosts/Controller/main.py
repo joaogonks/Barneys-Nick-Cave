@@ -153,7 +153,7 @@ class OutgoingMessageSpool(threading.Thread):
             time.sleep(self.frequency)
 
 outgoingmessagespool = OutgoingMessageSpool()
-outgoingmessagespool.run()
+
 
 
 def init(HOSTNAME):
@@ -183,3 +183,4 @@ def init(HOSTNAME):
 
     animator = Animator()
     animator.start()
+    outgoingmessagespool.run()
