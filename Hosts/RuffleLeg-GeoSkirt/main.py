@@ -23,14 +23,14 @@ def network_message_handler(msg):
         if topic == "RuffleLeg":
           action, params = yaml.safe_load(msg[1])
           if action == "expand":
-            position, speed = params
+            position = params[0]
             controller.moveTo(1, position)
           if action == "contract":
             controller.moveTo(1, position)
         if topic == "GeoSkirt":
           action, params = yaml.safe_load(msg[1])
           if action == "expand":
-            position, speed = params
+            position = params[0]
             controller.moveTo(2, position)
           if action == "contract":
             controller.moveTo(2, position)
