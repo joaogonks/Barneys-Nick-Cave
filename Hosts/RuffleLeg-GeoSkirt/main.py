@@ -215,6 +215,7 @@ class Controller(threading.Thread):
 
 
 controller = Controller()
+controller.start()
 
 ######## ABSOLUTE ENCODER ###########
 
