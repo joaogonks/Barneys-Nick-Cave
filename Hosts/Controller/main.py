@@ -100,7 +100,7 @@ class Animator(threading.Thread):
         #motions["BirdNest"].expand(0, 100)
         #time.sleep(1)
 
-        time.sleep(10)
+        time.sleep(15)
 
     def contract(self):
         motions["LotusFigure"].contract(0, -10)
@@ -122,7 +122,7 @@ class Animator(threading.Thread):
         #motions["Eyeballs"].contract(2000, 100)
         #time.sleep(1)
 
-        time.sleep(10)
+        time.sleep(15)
 
     def run(self):
         while True:
