@@ -76,6 +76,7 @@ class Controller(threading.Thread):
         #startbits=serial.STARTBITS_ONE,
         stopbits=serial.STOPBITS_ONE,
         parity=serial.PARITY_NONE,
+        timeout=0
       )
       #self.serial.open()
       self.open = True
