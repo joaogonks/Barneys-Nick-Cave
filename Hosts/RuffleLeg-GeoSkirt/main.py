@@ -18,7 +18,7 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        print "network_message_handler", msg
+        #print "network_message_handler", msg
         topic = msg[0]
         if topic == "RuffleLeg":
           action, params = yaml.safe_load(msg[1])
@@ -99,6 +99,7 @@ class Controller(threading.Thread):
       pass
   """
   def moveTo(self, channel, position):
+    print "moveTo=",channel, position
     self.cmdQueue.put([channel, position])
     """
     if channel == 1:
@@ -110,8 +111,10 @@ class Controller(threading.Thread):
     """
   def run(self):
     while True:
+      print 101
       # if is there a new moveTo command in the queue
       while not self.cmdQueue.empty():
+        print 102
         channel, destinationPosition = self.cmdQueue.get()
         # read current positions
         cmd = '?C' + '\r'
@@ -123,6 +126,7 @@ class Controller(threading.Thread):
         #positions_raw = self.serialDialog(cmd)
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
         if channel == 1:
+          print 103
           # set destinations
           self.destinationPosition1 = destinationPosition
           # calculate direction and save
@@ -136,6 +140,7 @@ class Controller(threading.Thread):
           resp = self.serial.readline()
           print "resp=",resp
         if channel == 2:
+          print 104
           # set destinations
           self.destinationPosition1 = destinationPosition
           # calculate direction and save
@@ -148,12 +153,16 @@ class Controller(threading.Thread):
           # read resp from serial
           resp = self.serial.readline()
           print "resp=",resp
+      print 106
       # read current positions
       cmd = '?C' + '\r'
+      print 107
       # write to serial
       self.serial.write(cmd)
+      print 108
       # read resp from serial
       positions_raw = self.serial.readline()
+      print 109
       print "positions_raw=",positions_raw
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       # channel 1
