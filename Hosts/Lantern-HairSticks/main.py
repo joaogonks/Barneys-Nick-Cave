@@ -152,6 +152,11 @@ class Controller(threading.Thread):
       print 108
       # read resp from serial
       print "positions_raw=",positions_raw
+
+      measuredPosition1 = 0
+      measuredPosition2 = 0
+
+      
       try:
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       except Exception as e:
