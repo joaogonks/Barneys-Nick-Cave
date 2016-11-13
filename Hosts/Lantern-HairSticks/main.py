@@ -135,10 +135,10 @@ class Controller(threading.Thread):
         if channel == 2:
           print 104
           # set destinations
-          self.destinationPosition1 = destinationPosition
+          self.destinationPosition2 = destinationPosition
           # calculate direction and save
-          self.direction1 = -1 if measuredPosition2 < self.destinationPosition2 else 1
-          speed = int(self.direction1 * 30)
+          self.direction2 = -1 if measuredPosition2 < self.destinationPosition2 else 1
+          speed = int(self.direction2 * 30)
           # generate serial command
           cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           # write to serial
