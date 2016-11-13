@@ -92,12 +92,12 @@ class Controller(threading.Thread):
   
   def serialDialog(self, msg):
     if self.open:
-      print "serialDialog msg=", msg
+      #print "serialDialog msg=", msg
       self.serial.flush()
       self.serial.write(msg)
       self.serial.flush()
       resp = self.serial.readline()
-      print "serialDialog response:" 
+      #print "serialDialog response:" 
       return resp
     else:
       print 'Serial not connected'
