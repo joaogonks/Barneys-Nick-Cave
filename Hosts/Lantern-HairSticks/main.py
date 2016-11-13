@@ -108,6 +108,7 @@ class Controller(threading.Thread):
     self.cmdQueue.put([channel, position])
 
   def outOfBounds(self, measuered, destination, direction):
+    print "BOUNDS === ", measuered, destination, direction
     if direction == 1:
       return measuered >= destination
     if direction == -1:
