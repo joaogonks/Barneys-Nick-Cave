@@ -9,8 +9,6 @@ import yaml
 #from thirtybirds.Logs.main import Exception_Collector
 from thirtybirds.Network.manager import init as network_init
 
-
-
 def network_status_handler(msg):
     print "network_status_handler", msg
 
@@ -58,7 +56,6 @@ class Motion():
         outgoingmessagespool.addMessage(self.motion_name,  "contract", [end_pos, speed])
     def stop(self):
         print "stop", self.motion_name
-        #network.send(self.motion_name, ["stop", []])
         outgoingmessagespool.addMessage(self.motion_name, ["stop", [end_pos, speed]])
 
 
@@ -103,7 +100,7 @@ class Animator(threading.Thread):
         #motions["BirdNest"].expand(0, 100)
         #time.sleep(1)
 
-        time.sleep(5)
+        time.sleep(10)
 
     def contract(self):
         #motions["LotusFigure"].contract(2000, 100)
@@ -125,7 +122,7 @@ class Animator(threading.Thread):
         #motions["Eyeballs"].contract(2000, 100)
         #time.sleep(1)
 
-        time.sleep(5)
+        time.sleep(10)
 
     def run(self):
         while True:
