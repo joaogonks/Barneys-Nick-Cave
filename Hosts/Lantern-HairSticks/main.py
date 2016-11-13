@@ -18,9 +18,9 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        #print "network_message_handler", msg
+        print "network_message_handler", msg
         topic = msg[0]
-        if topic == "Lantern":
+        if topic == "HairSticks":
           action, params = yaml.safe_load(msg[1])
 
           position = params[0]
@@ -28,7 +28,7 @@ def network_message_handler(msg):
             controller.moveTo(1, position)
           if action == "contract":
             controller.moveTo(1, position)
-        if topic == "HairSticks":
+        if topic == "Lantern":
           action, params = yaml.safe_load(msg[1])
           position = params[0]
           if action == "expand":
@@ -97,7 +97,8 @@ class Controller(threading.Thread):
       self.serial.write(msg)
       self.serial.flush()
       resp = self.serial.readline()
-      print "serialDialog response=", resp
+      print "serialDialog response:" 
+      print resp
     else:
       print 'Serial not connected'
       return ""
@@ -151,7 +152,10 @@ class Controller(threading.Thread):
       print 108
       # read resp from serial
       print "positions_raw=",positions_raw
-      measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+      try:
+        measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+      except Exception as e:
+        print e
       # channel 1
       # if encoder is past/near destination
       if self.direction1 == 1:
