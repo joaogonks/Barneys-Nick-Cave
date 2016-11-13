@@ -115,7 +115,12 @@ class Controller(threading.Thread):
         channel, destinationPosition = self.cmdQueue.get()
         # read current positions
         cmd = '?C' + '\r'
-        positions_raw = self.serialDialog(cmd)
+        # write to serial
+        self.serial.write(cmd)
+        # read resp from serial
+        positions_raw = self.serial.read()
+        print "positions_raw=",positions_raw
+        #positions_raw = self.serialDialog(cmd)
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
         if channel == 1:
           # set destinations
@@ -143,9 +148,13 @@ class Controller(threading.Thread):
           # read resp from serial
           resp = self.serial.read()
           print "resp=",resp
-      # read encoder positions
+      # read current positions
       cmd = '?C' + '\r'
-      positions_raw = self.serialDialog(cmd)
+      # write to serial
+      self.serial.write(cmd)
+      # read resp from serial
+      positions_raw = self.serial.read()
+      print "positions_raw=",positions_raw
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       # channel 1
       # if encoder is past/near destination
