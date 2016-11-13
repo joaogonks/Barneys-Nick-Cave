@@ -20,8 +20,22 @@ def network_message_handler(msg):
     try:
         print "network_message_handler", msg
         topic = msg[0]
-        host, sensor, data = yaml.safe_load(msg[1])
-        # print "Exception Received:", ex
+        if topic = "RuffleLeg":
+          action, params = yaml.safe_load(msg[1])
+          if action == "expand":
+            position, speed = params
+            controller.moveTo(1, position)
+          if action == "contract":
+            controller.moveTo(1, position)
+        if topic = "GeoSkirt":
+          action, params = yaml.safe_load(msg[1])
+          if action == "expand":
+            position, speed = params
+            controller.moveTo(2, position)
+          if action == "contract":
+            controller.moveTo(2, position)
+
+          # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e
 network = None
