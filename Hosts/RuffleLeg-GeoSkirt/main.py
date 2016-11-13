@@ -18,7 +18,7 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        #print "network_message_handler", msg
+        print "network_message_handler", msg
         topic = msg[0]
         host, sensor, data = yaml.safe_load(msg[1])
         # print "Exception Received:", ex
@@ -46,9 +46,11 @@ def init(HOSTNAME):
 
 ######## MOTOR CONTROL ##########
 
-class Controller():
+class Controller(threading):
   def __init__(self, deviceId=0):
+    threading.Thread.__init__(self)
     self.deviceId = deviceId
+    self.cmdQueue = Queue.Queue()
     self.open = False
     self.devicePath = "/dev/ttyUSB" + str(deviceId)
     try:
@@ -62,12 +64,17 @@ class Controller():
       )
       #self.serial.open()
       self.open = True
+      self.destinationPosition1 = 0
+      self.destinationPosition2 = 0
+      self.direction1 = 1
+      self.direction2 = 1
+      self.speed = 30
       print "Serial connected at ", self.devicePath
     except:
       self.open = False
       print("could not open device at ", self.devicePath)
-
-  def setSpeed(self, channel, rpm): 
+  """
+  def setSpeed(self, channel, rpm):
     if self.open:
       cmd = '!G ' + str(channel) + ' '+str(rpm)+'\r'
       print cmd
@@ -75,6 +82,122 @@ class Controller():
     else:
       print 'Serial not connected'
       pass
+  """
+  def moveTo(self, channel, position):
+    self.cmdQueue.put([channel, position])
+    """
+    if channel == 1:
+      self.destination1 = int(position)
+    if channel == 2:
+      self.destination2 = int(position)
+      cmd = '!G ' + str(channel) + ' '+str(self.speed) + '\r'
+      self.cmdQueue.put(cmd)
+    """
+  def run(self):
+    while True:
+      # if is there a new moveTo command in the queue
+      while not self.msgQueue.empty():
+        channel, destinationPosition = self.msgQueue.get()
+        # read current positions
+        cmd = '?C' + '\r'
+        positions_raw = self.serialDialog(cmd)
+        measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+        if channel == 1:
+          # set destinations
+          self.destinationPosition1 = destinationPosition
+          # calculate direction and save
+          self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
+          speed = int(self.direction1 * 30)
+          # generate serial command
+          cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
+          # write to serial
+          self.serial.write(cmd)
+          # read resp from serial
+          resp = self.serial.read()
+          print "resp=",resp
+        if channel == 2:
+          # set destinations
+          self.destinationPosition1 = destinationPosition
+          # calculate direction and save
+          self.direction1 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+          speed = int(self.direction1 * 30)
+          # generate serial command
+          cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
+          # write to serial
+          self.serial.write(cmd)
+          # read resp from serial
+          resp = self.serial.read()
+          print "resp=",resp
+      # read encoder positions
+      cmd = '?C' + '\r'
+      positions_raw = self.serialDialog(cmd)
+      measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+      # channel 1
+      # if encoder is past/near destination
+      if self.direction1 == 1:
+        if measuredPosition1 > self.destinationPosition1:
+          print "channel 1 endpoint, direction 1", measuredPosition1, self.destinationPosition1
+          # send new speed of 0
+          cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+          # write to serial
+          self.serial.write(cmd)
+          # read resp from serial
+          resp = self.serial.read()
+          print "resp=",resp
+      if self.direction1 == -1:
+        if measuredPosition1 < self.destinationPosition1:
+          print "channel 1 endpoint, direction -1", measuredPosition1, self.destinationPosition1
+          # send new speed of 0
+          cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+          # write to serial
+          self.serial.write(cmd)
+          # read resp from serial
+          resp = self.serial.read()
+          print "resp=",resp
+
+      # channel 2
+      # if encoder is past/near destination
+      if self.direction2 == 1:
+        if measuredPosition2 > self.destinationPosition2:
+          print "channel 2 endpoint, direction 1", measuredPosition1, self.destinationPosition1
+          # send new speed of 0
+          cmd = '!G ' + str(2) + ' '+str(0) + '\r'
+          # write to serial
+          self.serial.write(cmd)
+          # read resp from serial
+          resp = self.serial.read()
+          print "resp=",resp
+      if self.direction2 == -1:
+        if measuredPosition2 < self.destinationPosition2:
+          print "channel 1 endpoint, direction -1", measuredPosition2, self.destinationPosition2
+          # send new speed of 0
+          cmd = '!G ' + str(2) + ' '+str(0) + '\r'
+          # write to serial
+          self.serial.write(cmd)
+          # read resp from serial
+          resp = self.serial.read()
+          print "resp=",resp
+      time.sleep(0.05)
+
+        # read any fault states
+          # channel 1
+            # if fault state
+              # send new speed of 0
+          # channel 2
+            # if fault state
+              # send new speed of 0
+
+
+        
+    # read positions
+
+
+
+
+
+
+
+
 
 controller = Controller()
 

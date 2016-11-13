@@ -9,6 +9,8 @@ import yaml
 #from thirtybirds.Logs.main import Exception_Collector
 from thirtybirds.Network.manager import init as network_init
 
+
+
 def network_status_handler(msg):
     print "network_status_handler", msg
 
@@ -45,26 +47,20 @@ class Motion():
         self.motion_name = motion_name
         self.position = -1
     def get_abs_position(self):
-        network.send(self.motion_name, ["get_abs_position", []])
+        outgoingmessagespool.addMessage(self.motion_name, "get_abs_position", [])
     def store_abs_position(self, position):
         self.position = position
     def zero_abs_position(self):
-        network.send(self.motion_name, ["zero_abs_position", []])
+        outgoingmessagespool.addMessage(self.motion_name, "zero_abs_position", [])
     def expand(self, end_pos, speed):
-        print "expand", self.motion_name, end_pos, speed
-        if ex.checkNoException():
-            network.send(self.motion_name, ["expand", [end_pos, speed]])
-        else:
-            self.stop()
+        outgoingmessagespool.addMessage(self.motion_name, "expand", [end_pos, speed])
     def contract(self, end_pos, speed):
-        print "contract", self.motion_name, end_pos, speed
-        if ex.checkNoException():
-            network.send(self.motion_name, ["contract", [end_pos, speed]])
-        else:
-            self.stop()
+        outgoingmessagespool.addMessage(self.motion_name,  "contract", [end_pos, speed])
     def stop(self):
         print "stop", self.motion_name
-        network.send(self.motion_name, ["stop", []])
+        #network.send(self.motion_name, ["stop", []])
+        outgoingmessagespool.addMessage(self.motion_name, ["stop", [end_pos, speed]])
+
 
 motion_names = ["Bathmat","Eyeballs","Lantern","HairSticks","LotusFigure","RuffleLeg","GeoSkirt","WoodenLeg","BirdNest"]
 motions = {}
@@ -107,6 +103,8 @@ class Animator(threading.Thread):
         motions["BirdNest"].expand(0, 100)
         time.sleep(1)
 
+        time.sleep(10)
+
     def contract(self):
         motions["LotusFigure"].contract(2000, 100)
         time.sleep(1)
@@ -127,6 +125,8 @@ class Animator(threading.Thread):
         motions["Eyeballs"].contract(2000, 100)
         time.sleep(1)
 
+        time.sleep(10)
+
     def run(self):
         while True:
             self.expand()
@@ -141,22 +141,25 @@ class OutgoingMessageSpool(threading.Thread):
         threading.Thread.__init__(self)
         self.msgQueue = Queue.Queue()
         self.frequency = 1.0
-    def addMessage(self,destination,msg):
+    def addMessage(self,destination,cmd,params):
         self.msgQueue.put([destination,cmd,params])
     def run(self):
         while True:
-            while not self.msgQueue.empty():
-                destination,cmd,params = self.msgQueue.get()
-                print "OutgoingMessageSpool 1", destination, cmd, params
-                network.send(destination, [cmd, params])
-            for motion_name in motion_names:
-                print "OutgoingMessageSpool 2", destination, cmd, params
-                network.send(motion_name, ["deadman", []])
-            time.sleep(self.frequency)
+            if ex.checkNoException():
+                while not self.msgQueue.empty():
+                    destination,cmd,params = self.msgQueue.get()
+                    print "OutgoingMessageSpool 1", destination, cmd, params
+                    network.send(destination, [cmd, params])
+                for motion_name in motion_names:
+                    print "OutgoingMessageSpool 2", motion_name
+                    network.send(motion_name, ["deadman", [True]])
+                time.sleep(self.frequency)
+            else:
+                for motion_name in motion_names:
+                    print "OutgoingMessageSpool 3", motion_name
+                    network.send(motion_name, ["deadman", [False]])
 
 outgoingmessagespool = OutgoingMessageSpool()
-
-
 
 def init(HOSTNAME):
     global network
