@@ -109,9 +109,9 @@ class Controller(threading.Thread):
 
   def outOfBounds(self, measuered, destination, direction):
     print "BOUNDS === ", measuered, destination, direction
-    if direction == 1:
-      return measuered >= destination
     if direction == -1:
+      return measuered >= destination
+    if direction == 1:
       return measuered <= destination
 
   def run(self):
@@ -167,7 +167,7 @@ class Controller(threading.Thread):
 
       if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
         print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
-        cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+        cmd = '!G ' + str(2) + ' '+str(0) + '\r'
         resp = self.serialDialog(cmd)
         print "resp=",resp
 
