@@ -125,6 +125,7 @@ class Controller(threading.Thread):
         if channel == 1:
           self.destinationPosition1 = destinationPosition
           self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
+          print "channel 1 direction", self.direction1, measuredPosition1, self.destinationPosition1 
           if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
           else:
@@ -135,6 +136,7 @@ class Controller(threading.Thread):
         if channel == 2:
           self.destinationPosition2 = destinationPosition
           self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+          print "channel 2 direction", self.direction2, measuredPosition2, self.destinationPosition2
           if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
           else:
