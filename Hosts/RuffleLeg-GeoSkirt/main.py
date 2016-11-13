@@ -118,7 +118,7 @@ class Controller(threading.Thread):
         # write to serial
         self.serial.write(cmd)
         # read resp from serial
-        positions_raw = self.serial.read()
+        positions_raw = self.serial.readline()
         print "positions_raw=",positions_raw
         #positions_raw = self.serialDialog(cmd)
         measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
@@ -133,7 +133,7 @@ class Controller(threading.Thread):
           # write to serial
           self.serial.write(cmd)
           # read resp from serial
-          resp = self.serial.read()
+          resp = self.serial.readline()
           print "resp=",resp
         if channel == 2:
           # set destinations
@@ -146,14 +146,14 @@ class Controller(threading.Thread):
           # write to serial
           self.serial.write(cmd)
           # read resp from serial
-          resp = self.serial.read()
+          resp = self.serial.readline()
           print "resp=",resp
       # read current positions
       cmd = '?C' + '\r'
       # write to serial
       self.serial.write(cmd)
       # read resp from serial
-      positions_raw = self.serial.read()
+      positions_raw = self.serial.readline()
       print "positions_raw=",positions_raw
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       # channel 1
@@ -166,7 +166,7 @@ class Controller(threading.Thread):
           # write to serial
           self.serial.write(cmd)
           # read resp from serial
-          resp = self.serial.read()
+          resp = self.serial.readline()
           print "resp=",resp
       if self.direction1 == -1:
         if measuredPosition1 < self.destinationPosition1:
@@ -176,7 +176,7 @@ class Controller(threading.Thread):
           # write to serial
           self.serial.write(cmd)
           # read resp from serial
-          resp = self.serial.read()
+          resp = self.serial.readline()
           print "resp=",resp
 
       # channel 2
@@ -189,7 +189,7 @@ class Controller(threading.Thread):
           # write to serial
           self.serial.write(cmd)
           # read resp from serial
-          resp = self.serial.read()
+          resp = self.serial.readline()
           print "resp=",resp
       if self.direction2 == -1:
         if measuredPosition2 < self.destinationPosition2:
@@ -199,7 +199,7 @@ class Controller(threading.Thread):
           # write to serial
           self.serial.write(cmd)
           # read resp from serial
-          resp = self.serial.read()
+          resp = self.serial.readline()
           print "resp=",resp
       time.sleep(0.05)
 
