@@ -100,7 +100,7 @@ class Animator(threading.Thread):
         time.sleep(10)
         #motions["HairSticks"].contract(20000, 0)
         #time.sleep(1)
-        motions["RuffleLeg"].contract(20000, 100)
+        motions["RuffleLeg"].contract(35000, 100)
         time.sleep(1)
         #motions["WoodenLeg"].contract(20000, 100)
         #time.sleep(1)

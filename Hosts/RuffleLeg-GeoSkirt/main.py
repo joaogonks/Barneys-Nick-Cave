@@ -133,7 +133,7 @@ class Controller(threading.Thread):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
             last_cmd = cmd
           else:
-            speed = int(self.direction1 * 20)
+            speed = int(self.direction1 * 40)
             cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
             last_cmd = cmd
           resp = self.serialDialog(cmd)
