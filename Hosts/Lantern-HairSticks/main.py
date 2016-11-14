@@ -151,6 +151,7 @@ class Controller(threading.Thread):
         #   resp = self.serialDialog(cmd)
       cmd = '?C' + '\r'
       positions_raw = self.serialDialog(cmd)
+      print positions_raw
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
       measuredPosition1 = int(measuredPosition1)
       measuredPosition2 = int(measuredPosition2)
