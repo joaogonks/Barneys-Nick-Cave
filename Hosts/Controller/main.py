@@ -58,7 +58,6 @@ class Motion():
         print "stop", self.motion_name
         outgoingmessagespool.addMessage(self.motion_name, ["stop", [end_pos, speed]])
 
-
 motion_names = ["Bathmat","Eyeballs","Lantern","HairSticks","LotusFigure","RuffleLeg","GeoSkirt","WoodenLeg","BirdNest"]
 motions = {}
 for motion_name in motion_names:
@@ -81,29 +80,29 @@ class Animator(threading.Thread):
             ]
         }        
     def expand(self):
-        motions["LotusFigure"].expand(0, 2)
+        motions["LotusFigure"].expand(0, 3)
         #time.sleep(1)
         #motions["Eyeballs"].expand(0, 100)
         #time.sleep(1)
-        #motions["WoodenLeg"].expand(0, 100)
-        #time.sleep(1)
-        #motions["RuffleLeg"].expand(0, 100)
-        #time.sleep(1)
+        motions["WoodenLeg"].expand(0, 100)
+        time.sleep(1)
+        motions["RuffleLeg"].expand(0, 100)
+        time.sleep(1)
         #motions["GeoSkirt"].expand(0, 100)
         #time.sleep(1)
-        motions["HairSticks"].expand(1000, 100)
+        #motions["HairSticks"].expand(2000, 100)
+        #time.sleep(1)
+        motions["Lantern"].expand(4000, 100)
         time.sleep(1)
-        motions["Lantern"].expand(1000, 100)
-        #time.sleep(1)
-        #motions["Bathmat"].expand(0, 100)
-        #time.sleep(1)
+        motions["Bathmat"].expand(0, 100)
+        time.sleep(1)
         #motions["BirdNest"].expand(0, 100)
         #time.sleep(1)
 
         time.sleep(20)
 
     def contract(self):
-        motions["LotusFigure"].contract(0, -2)
+        motions["LotusFigure"].contract(0, -3)  
         #time.sleep(1)
         #motions["BirdNest"].contract(2000, 100)
         #time.sleep(1)
@@ -112,17 +111,17 @@ class Animator(threading.Thread):
         motions["Lantern"].contract(40000, 0)
         time.sleep(1)
         motions["HairSticks"].contract(20000, 0)
-        #time.sleep(1)
+        time.sleep(1)
         #motions["GeoSkirt"].contract(40000, 100)
         #time.sleep(1)
-        #motions["RuffleLeg"].contract(40000, 100)
-        #time.sleep(1)
-        #motions["WoodenLeg"].contract(2000, 100)
-        #time.sleep(1)        
+        motions["RuffleLeg"].contract(20000, 100)
+        time.sleep(1)
+        motions["WoodenLeg"].contract(20000, 100)
+        time.sleep(1)        
         #motions["Eyeballs"].contract(2000, 100)
         #time.sleep(1)
-
-        time.sleep(20)
+        motions["LotusFigure"].contract(0, 0)
+        time.sleep(25)
 
     def run(self):
         while True:

@@ -165,26 +165,6 @@ class Controller(threading.Thread):
         print "resp=",resp
 
 
-        # read any fault states
-          # channel 1
-            # if fault state
-              # send new speed of 0
-          # channel 2
-            # if fault state
-              # send new speed of 0
-
-
-        
-    # read positions
-
-
-
-
-
-
-
-
-
 controller = Controller()
 controller.start()
 
