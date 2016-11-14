@@ -19,11 +19,15 @@ def network_status_handler(msg):
 def network_message_handler(msg):
     try:
         print "network_message_handler", msg
+        print 101
         topic = msg[0]
+        print 102
         if topic == "LotusFigure":
+          print 102
           action, params = yaml.safe_load(msg[1])
-
+          print 103
           speed = params[1]
+          print 104
           if action == "expand":
             controller.moveTo(1, speed)
           if action == "contract":
@@ -97,7 +101,6 @@ class Controller(threading.Thread):
 
   def run(self):
     while True:
-      print 101
       while not self.cmdQueue.empty():
         channel, destinationSpeed = self.cmdQueue.get()
         if channel == 1:
