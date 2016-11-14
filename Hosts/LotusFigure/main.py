@@ -103,8 +103,8 @@ class Controller(threading.Thread):
           last_cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
         else:
           last_cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
-      print last_cmd
       resp = self.serialDialog(last_cmd)
+      print last_cmd, resp
 
 
 controller = Controller()
