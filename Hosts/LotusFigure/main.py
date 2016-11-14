@@ -71,7 +71,7 @@ class Controller(threading.Thread):
         #startbits=serial.STARTBITS_ONE,
         stopbits=serial.STOPBITS_ONE,
         parity=serial.PARITY_NONE,
-        timeout=1
+        timeout=0.1
       )
       #self.serial.open()
       self.open = True
@@ -110,7 +110,6 @@ class Controller(threading.Thread):
 
       cmd = '?C' + '\r'
       self.serialDialog(cmd)
-      time.sleep(0.05)
 
 controller = Controller()
 controller.start()

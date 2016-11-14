@@ -81,7 +81,7 @@ class Animator(threading.Thread):
             ]
         }        
     def expand(self):
-        motions["LotusFigure"].expand(0, 6)
+        motions["LotusFigure"].expand(0, 2)
         #time.sleep(1)
         #motions["Eyeballs"].expand(0, 100)
         #time.sleep(1)
@@ -103,7 +103,7 @@ class Animator(threading.Thread):
         time.sleep(20)
 
     def contract(self):
-        motions["LotusFigure"].contract(0, -6)
+        motions["LotusFigure"].contract(0, -2)
         #time.sleep(1)
         #motions["BirdNest"].contract(2000, 100)
         #time.sleep(1)
