@@ -20,7 +20,7 @@ def network_message_handler(msg):
     try:
         #print "network_message_handler", msg
         topic = msg[0]
-        if topic == "HairSticks":
+        if topic == "Lantern":
           action, params = yaml.safe_load(msg[1])
 
           position = params[0]
@@ -28,13 +28,13 @@ def network_message_handler(msg):
             controller.moveTo(1, position)
           if action == "contract":
             controller.moveTo(1, position)
-        if topic == "Lantern":
-          action, params = yaml.safe_load(msg[1])
-          position = params[0]
-          if action == "expand":
-            controller.moveTo(2, position)
-          if action == "contract":
-            controller.moveTo(2, position)
+        # if topic == "GeoSkirt":
+        #   action, params = yaml.safe_load(msg[1])
+        #   position = params[0]
+        #   if action == "expand":
+        #     controller.moveTo(2, position)
+        #   if action == "contract":
+        #     controller.moveTo(2, position)
 
           # print "Exception Received:", ex
     except Exception as e:
@@ -57,7 +57,7 @@ def init(HOSTNAME):
     network.subscribe_to_topic("system")  # subscribe to all system messages
     network.subscribe_to_topic("exceptions")
     network.subscribe_to_topic("Lantern")
-    network.subscribe_to_topic("HairSticks")
+    # network.subscribe_to_topic("GeoSkirt")
 
 ######## MOTOR CONTROL ##########
 
@@ -135,17 +135,17 @@ class Controller(threading.Thread):
             cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
           resp = self.serialDialog(cmd)
         print cmd
-        if channel == 2:
-          self.destinationPosition2 = destinationPosition
-          self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
-          print "channel 2 direction", self.direction2, measuredPosition2, self.destinationPosition2
-          if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
-            cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
-          else:
-            speed = int(self.direction2 * 40)
-            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
-          print cmd
-          resp = self.serialDialog(cmd)
+        # if channel == 2:
+        #   self.destinationPosition2 = destinationPosition
+        #   self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+        #   print "channel 2 direction", self.direction2, measuredPosition2, self.destinationPosition2
+        #   if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
+        #     cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
+        #   else:
+        #     speed = int(self.direction2 * 40)
+        #     cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
+        #   print cmd
+        #   resp = self.serialDialog(cmd)
       cmd = '?C' + '\r'
       positions_raw = self.serialDialog(cmd)
       measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
@@ -158,11 +158,11 @@ class Controller(threading.Thread):
         resp = self.serialDialog(cmd)
         print "resp=",resp
 
-      if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
-        print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
-        cmd = '!G ' + str(2) + ' '+str(0) + '\r'
-        resp = self.serialDialog(cmd)
-        print "resp=",resp
+      # if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
+      #   print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
+      #   cmd = '!G ' + str(2) + ' '+str(0) + '\r'
+      #   resp = self.serialDialog(cmd)
+      #   print "resp=",resp
 
 
         # read any fault states
