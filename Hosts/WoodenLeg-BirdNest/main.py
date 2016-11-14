@@ -25,9 +25,9 @@ def network_message_handler(msg):
 
           position = params[0]
           if action == "expand":
-            controller.moveTo(1, position)
+            controller.moveTo(2, position)
           if action == "contract":
-            controller.moveTo(1, position)
+            controller.moveTo(2, position)
         # if topic == "GeoSkirt":
         #   action, params = yaml.safe_load(msg[1])
         #   position = params[0]
@@ -146,15 +146,15 @@ class Controller(threading.Thread):
         #measuredPosition1 = int(measuredPosition1)
         #measuredPosition2 = int(measuredPosition2)
         measuredPosition1,measuredPosition2 = self.readEncoder()
-        if channel == 1:
-          self.destinationPosition1 = destinationPosition
-          self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
-          print "channel 1 direction", self.direction1, measuredPosition1, self.destinationPosition1 
-          if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
+        if channel == 2:
+          self.destinationPosition2 = destinationPosition
+          self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
+          print "channel 2 direction", self.direction2, measuredPosition2, self.destinationPosition2
+          if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
             last_cmd = cmd
           else:
-            speed = int(self.direction1 * 20)
+            speed = int(self.direction2 * 20)
             cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
             last_cmd = cmd
           resp = self.serialDialog(cmd)
@@ -177,9 +177,9 @@ class Controller(threading.Thread):
       #measuredPosition2 = int(measuredPosition2)
       #print measuredPosition1, measuredPosition2
       measuredPosition1,measuredPosition2 = self.readEncoder()
-      if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
-        print "channel 1 out of bounds",measuredPosition1, self.destinationPosition1, self.direction1
-        cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+      if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
+        print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
+        cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
         last_cmd = cmd
         resp = self.serialDialog(cmd)
         print "resp=",resp
