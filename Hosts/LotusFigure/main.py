@@ -18,7 +18,7 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        #print "network_message_handler", msg
+        print "network_message_handler", msg
         topic = msg[0]
         if topic == "LotusFigure":
           action, params = yaml.safe_load(msg[1])
