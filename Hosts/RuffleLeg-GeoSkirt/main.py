@@ -115,6 +115,7 @@ class Controller(threading.Thread):
       return measuered >= destination
 
   def run(self):
+    last_cmd = '?C' + '\r'
     while True:
       while not self.cmdQueue.empty():
         channel, destinationPosition = self.cmdQueue.get()
@@ -130,9 +131,11 @@ class Controller(threading.Thread):
           print "channel 1 direction", self.direction1, measuredPosition1, self.destinationPosition1 
           if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
+            last_cmd = cmd
           else:
             speed = int(self.direction1 * 20)
             cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
+            last_cmd = cmd
           resp = self.serialDialog(cmd)
         print cmd
         # if channel == 2:
@@ -155,9 +158,11 @@ class Controller(threading.Thread):
       if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
         print "channel 1 out of bounds",measuredPosition1, self.destinationPosition1, self.direction1
         cmd = '!G ' + str(1) + ' '+str(0) + '\r'
+        last_cmd = cmd
         resp = self.serialDialog(cmd)
         print "resp=",resp
-
+      resp = self.serialDialog(last_cmd)
+      print last_cmd, resp
       # if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
       #   print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
       #   cmd = '!G ' + str(2) + ' '+str(0) + '\r'
