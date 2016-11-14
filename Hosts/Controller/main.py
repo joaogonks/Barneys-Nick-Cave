@@ -86,7 +86,7 @@ class Animator(threading.Thread):
         #time.sleep(1)
         #motions["RuffleLeg"].expand(0, 100)
         #time.sleep(1)
-        motions["Lantern"].expand(-8000, 100)
+        motions["Lantern"].expand(-4000, 100)
         time.sleep(1)
         #motions["Bathmat"].expand(0, 100)
         #time.sleep(1)
@@ -96,8 +96,8 @@ class Animator(threading.Thread):
     def contract(self):
         motions["LotusFigure"].contract(0, -3)  
         #time.sleep(1)
-        motions["Lantern"].contract(8000, 0)
-        time.sleep(1)
+        motions["Lantern"].contract(6000, 0)
+        time.sleep(10)
         #motions["HairSticks"].contract(20000, 0)
         #time.sleep(1)
         #motions["RuffleLeg"].contract(20000, 100)
@@ -105,7 +105,7 @@ class Animator(threading.Thread):
         #motions["WoodenLeg"].contract(20000, 100)
         #time.sleep(1)        
         motions["LotusFigure"].contract(0, 0)
-        time.sleep(25)
+        time.sleep(15)
 
     def run(self):
         while True:
