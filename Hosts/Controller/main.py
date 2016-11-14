@@ -88,14 +88,16 @@ class Animator(threading.Thread):
         time.sleep(1)
         motions["Lantern"].expand(-4000, 100)
         time.sleep(1)
-        #motions["Bathmat"].expand(0, 100)
-        #time.sleep(1)
+        motions["Bathmat"].expand(-4000, 100)
+        time.sleep(1)
 
         time.sleep(20)
 
     def contract(self):
         motions["LotusFigure"].contract(0, -3)  
         #time.sleep(1)
+        motions["Bathmat"].expand(6000, 100)
+        time.sleep(1)
         motions["Lantern"].contract(6000, 0)
         time.sleep(10)
         #motions["HairSticks"].contract(20000, 0)
