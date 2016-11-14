@@ -179,7 +179,7 @@ class Controller(threading.Thread):
       measuredPosition1,measuredPosition2 = self.readEncoder()
       if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
         print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
-        cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
+        cmd = '!G ' + str(2) + ' '+str(0) + '\r'
         last_cmd = cmd
         resp = self.serialDialog(cmd)
         print "resp=",resp
