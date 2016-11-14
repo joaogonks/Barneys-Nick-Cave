@@ -128,11 +128,11 @@ class Controller(threading.Thread):
 
   def readEncoder(self):
     encs = self._readEncoder()
-    if encs is not None:
+    if encs != None:
       return encs
-    if encs is not None:
+    if encs != None:
       return encs
-    if encs is not None:
+    if encs != None:
       return encs
 
 
