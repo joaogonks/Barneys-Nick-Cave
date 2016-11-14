@@ -99,17 +99,16 @@ class Controller(threading.Thread):
     self.cmdQueue.put([channel, speed])
 
   def run(self):
+    last_cmd = '?C' + '\r'
     while True:
       while not self.cmdQueue.empty():
         channel, destinationSpeed = self.cmdQueue.get()
         if channel == 1:
-          cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
+          last_cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
         else:
-          cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
-        resp = self.serialDialog(cmd)
+          last_cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
+      resp = self.serialDialog(last_cmd)
 
-      cmd = '?C' + '\r'
-      self.serialDialog(cmd)
 
 controller = Controller()
 controller.start()
