@@ -19,20 +19,19 @@ def network_status_handler(msg):
 def network_message_handler(msg):
     try:
         print "network_message_handler", msg
-        print 101
+        print 100
         topic = msg[0]
-        print 102
+        print 101
         if topic == "LotusFigure":
           print 102
           action, params = yaml.safe_load(msg[1])
-          print 103
-          speed = params[1]
-          print 104
           if action == "expand":
+            speed = params[1]
             controller.moveTo(1, speed)
           if action == "contract":
+            speed = params[1]
             controller.moveTo(1, speed)
-
+          print 103
           # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e
