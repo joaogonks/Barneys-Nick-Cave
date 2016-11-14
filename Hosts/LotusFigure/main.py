@@ -101,10 +101,10 @@ class Controller(threading.Thread):
       while not self.cmdQueue.empty():
         channel, destinationSpeed = self.cmdQueue.get()
         if channel == 1:
-            cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
-          else:
-            cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
-          resp = self.serialDialog(cmd)
+          cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
+        else:
+          cmd = '!G ' + str(channel) + ' '+str(destinationSpeed) + '\r'
+        resp = self.serialDialog(cmd)
 
       cmd = '?C' + '\r'
       self.serialDialog(cmd)
