@@ -110,7 +110,6 @@ class Controller(threading.Thread):
       print e
       return None
 
-
   def readEncoder(self):
     encs = self._readEncoder()
     if encs is not None:
