@@ -114,17 +114,39 @@ class Controller(threading.Thread):
     if direction == 1:
       return measuered >= destination
 
+  def _readEncoder(self):
+    try:
+      cmd = '?C' + '\r'
+      positions_raw = self.serialDialog(cmd)
+      print "positions_raw=",positions_raw
+      measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+      return [int(measuredPosition1),int(measuredPosition2)]
+    except Exception as e:
+      print e
+      return None
+
+
+  def readEncoder(self):
+    encs = self._readEncoder()
+    if encs is not None:
+      return encs
+    if encs is not None:
+      return encs
+    if encs is not None:
+      return encs
+
   def run(self):
     last_cmd = '?C' + '\r'
     while True:
       while not self.cmdQueue.empty():
         channel, destinationPosition = self.cmdQueue.get()
-        cmd = '?C' + '\r'
-        positions_raw = self.serialDialog(cmd)
-        print "positions_raw=",positions_raw
-        measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
-        measuredPosition1 = int(measuredPosition1)
-        measuredPosition2 = int(measuredPosition2)
+        #cmd = '?C' + '\r'
+        #positions_raw = self.serialDialog(cmd)
+        #print "positions_raw=",positions_raw
+        #measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+        #measuredPosition1 = int(measuredPosition1)
+        #measuredPosition2 = int(measuredPosition2)
+        measuredPosition1,measuredPosition2 = self.readEncoder()
         if channel == 1:
           self.destinationPosition1 = destinationPosition
           self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
@@ -149,13 +171,14 @@ class Controller(threading.Thread):
         #     cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
         #   print cmd
         #   resp = self.serialDialog(cmd)
-      cmd = '?C' + '\r'
-      positions_raw = self.serialDialog(cmd)
-      print positions_raw
-      measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
-      measuredPosition1 = int(measuredPosition1)
-      measuredPosition2 = int(measuredPosition2)
-      print measuredPosition1, measuredPosition2
+      #cmd = '?C' + '\r'
+      #positions_raw = self.serialDialog(cmd)
+      #print positions_raw
+      #measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
+      #measuredPosition1 = int(measuredPosition1)
+      #measuredPosition2 = int(measuredPosition2)
+      #print measuredPosition1, measuredPosition2
+      measuredPosition1,measuredPosition2 = self.readEncoder()
       if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
         print "channel 1 out of bounds",measuredPosition1, self.destinationPosition1, self.direction1
         cmd = '!G ' + str(1) + ' '+str(0) + '\r'
