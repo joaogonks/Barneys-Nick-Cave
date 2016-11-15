@@ -82,32 +82,32 @@ class Animator(threading.Thread):
     def expand(self):
         motions["LotusFigure"].expand(0, 4)
         #time.sleep(1)
-        motions["WoodenLeg"].expand(35000, 100)
+        motions["WoodenLeg"].expand(3500, 100)
         time.sleep(1)
-        motions["RuffleLeg"].expand(35000, 100)
+        motions["RuffleLeg"].expand(0, 100)
         time.sleep(1)
-        motions["Lantern"].expand(-5000, 100)
+        motions["Lantern"].expand(5000, 100)
         time.sleep(1)
-        motions["Bathmat"].expand(-9000, 100)
+        motions["Bathmat"].expand(9000, 100)
         time.sleep(1)
 
-        time.sleep(20)
+        time.sleep(25)
 
     def contract(self):
         motions["LotusFigure"].contract(0, -4)
         #time.sleep(1)
-        motions["Bathmat"].expand(9000, 100)
+        motions["Bathmat"].expand(-9000, 100)
         time.sleep(1)
-        motions["Lantern"].contract(5000, 0)
+        motions["Lantern"].contract(-5000, 0)
         time.sleep(1)
         #motions["HairSticks"].contract(20000, 0)
         #time.sleep(1)
-        motions["RuffleLeg"].contract(0, 100)
+        motions["RuffleLeg"].contract(25000, 100)
         time.sleep(1)
         motions["WoodenLeg"].contract(0, 100)
         time.sleep(1)
         motions["LotusFigure"].contract(0, 0)
-        time.sleep(15)
+        time.sleep(25)
 
     def run(self):
         while True:
