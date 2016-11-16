@@ -21,6 +21,7 @@ def network_message_handler(msg):
         topic = msg[0]
         if topic == "Bathmat":
           action, params = yaml.safe_load(msg[1])
+
           position = params[0]
           speed = params[1]
           if (action == "expand" or
@@ -50,6 +51,7 @@ def init(HOSTNAME):
     network.subscribe_to_topic("Bathmat")
 
 ######## MOTOR CONTROL ##########
+
 class Controller(threading.Thread):
   def __init__(self, deviceId=0):
     threading.Thread.__init__(self)

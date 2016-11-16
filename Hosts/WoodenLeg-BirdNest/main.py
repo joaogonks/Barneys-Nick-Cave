@@ -18,7 +18,6 @@ def network_status_handler(msg):
 
 def network_message_handler(msg):
     try:
-        #print "network_message_handler", msg
         topic = msg[0]
         if topic == "WoodenLeg":
           action, params = yaml.safe_load(msg[1])
@@ -50,7 +49,6 @@ def init(HOSTNAME):
     network.subscribe_to_topic("system")  # subscribe to all system messages
     network.subscribe_to_topic("exceptions")
     network.subscribe_to_topic("WoodenLeg")
-    # network.subscribe_to_topic("GeoSkirt")
 
 ######## MOTOR CONTROL ##########
 
@@ -71,10 +69,8 @@ class Controller(threading.Thread):
         parity=serial.PARITY_NONE,
         timeout=0.1
       )
-      #self.serial.open()
       self.open = True
       self.destinationPosition1 = 0
-      self.destinationPosition2 = 0
       self.direction1 = 1
       self.direction2 = 1
       print "Serial connected at ", self.devicePath
