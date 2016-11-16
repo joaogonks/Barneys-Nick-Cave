@@ -22,10 +22,12 @@ def network_message_handler(msg):
         if topic == "Bathmat":
           action, params = yaml.safe_load(msg[1])
           position = params[0]
-          if action == "expand":
-            controller.moveTo(1, position)
-          if action == "contract":
-            controller.moveTo(1, position)
+          speed = params[1]
+          if (action == "expand" or
+                  action == "contract"):
+            controller.moveTo(1, position, speed)
+
+          # print "Exception Received:", ex
     except Exception as e:
         print "exception in network_message_handler", e
 network = None
@@ -69,7 +71,6 @@ class Controller(threading.Thread):
       self.destinationPosition1 = 0
       self.direction1 = 1
       self.direction2 = 1
-      self.speed = 30
       print "Serial connected at ", self.devicePath
     except:
       self.open = False
@@ -88,9 +89,9 @@ class Controller(threading.Thread):
       print 'Serial not connected'
       return ""
   
-  def moveTo(self, channel, position):
-    print "moveTo=",channel, position
-    self.cmdQueue.put([channel, position])
+  def moveTo(self, channel, position, speed):
+    print "moveTo=",channel, position, speed
+    self.cmdQueue.put([channel, position, speed])
 
   def outOfBounds(self, measuered, destination, direction):
     print "BOUNDS === ", repr(measuered), repr(destination), repr(direction)
@@ -123,7 +124,7 @@ class Controller(threading.Thread):
     last_cmd = '?C' + '\r'
     while True:
       while not self.cmdQueue.empty():
-        channel, destinationPosition = self.cmdQueue.get()
+        channel, destinationPosition, speed = self.cmdQueue.get()
         #cmd = '?C' + '\r'
         #positions_raw = self.serialDialog(cmd)
         #print "positions_raw=",positions_raw
@@ -134,35 +135,17 @@ class Controller(threading.Thread):
         if channel == 1:
           self.destinationPosition1 = destinationPosition
           self.direction1 = 1 if measuredPosition1 < self.destinationPosition1 else -1
-          print "channel 1 direction", self.direction1, measuredPosition1, self.destinationPosition1 
+          print "channel 1 direction", self.direction1, measuredPosition1, self.destinationPosition1
           if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
             cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
             last_cmd = cmd
           else:
-            speed = int(self.direction1 * 20)
-            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
+            velocity = int(self.direction1 * speed)
+            velocity = max(-100, min(100, velocity))
+            cmd = '!G ' + str(channel) + ' '+str(velocity) + '\r'
             last_cmd = cmd
           resp = self.serialDialog(cmd)
         print cmd
-        """
-        if channel == 2:
-          self.destinationPosition2 = destinationPosition
-          self.direction2 = 1 if measuredPosition2 < self.destinationPosition2 else -1
-          print "channel 2 direction", self.direction2, measuredPosition2, self.destinationPosition2
-          if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
-            cmd = '!G ' + str(channel) + ' '+str(0) + '\r'
-          else:
-            speed = int(self.direction2 * 40)
-            cmd = '!G ' + str(channel) + ' '+str(speed) + '\r'
-          print cmd
-          resp = self.serialDialog(cmd)
-        """
-      #cmd = '?C' + '\r'
-      #positions_raw = self.serialDialog(cmd)
-      #measuredPosition1, measuredPosition2 = positions_raw.split('=')[1].split(':')
-      #measuredPosition1 = int(measuredPosition1)
-      #measuredPosition2 = int(measuredPosition2)
-      #print measuredPosition1, measuredPosition2
       measuredPosition1,measuredPosition2 = self.readEncoder()
       if self.outOfBounds(measuredPosition1, self.destinationPosition1, self.direction1):
         print "channel 1 out of bounds",measuredPosition1, self.destinationPosition1, self.direction1
@@ -172,14 +155,6 @@ class Controller(threading.Thread):
         print "resp=",resp
       resp = self.serialDialog(last_cmd)
       print last_cmd, resp
-      """
-      if self.outOfBounds(measuredPosition2, self.destinationPosition2, self.direction2):
-        print "channel 2 out of bounds",measuredPosition2, self.destinationPosition2, self.direction2
-        cmd = '!G ' + str(2) + ' '+str(0) + '\r'
-        resp = self.serialDialog(cmd)
-        print "resp=",resp
-      """
-
 
 
 controller = Controller()
