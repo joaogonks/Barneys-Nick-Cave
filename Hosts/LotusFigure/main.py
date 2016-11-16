@@ -46,8 +46,11 @@ def init(HOSTNAME):
         status_callback=network_status_handler
     )
 
+    print "try to subscribe to: system"
     network.subscribe_to_topic("system")  # subscribe to all system messages
+    print "try to subscribe to: exceptions"
     network.subscribe_to_topic("exceptions")
+    print "try to subscribe to: LotusFigure"
     network.subscribe_to_topic("LotusFigure")
 
 ######## MOTOR CONTROL ##########
