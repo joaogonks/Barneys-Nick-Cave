@@ -25,7 +25,7 @@ def network_message_handler(msg):
 
           position = params[0]
           if action == "expand":
-            controller.moveTo(1, positions)
+            controller.moveTo(1, position)
           if action == "contract":
             controller.moveTo(1, position)
         # if topic == "GeoSkirt":
