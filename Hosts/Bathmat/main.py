@@ -114,13 +114,12 @@ class Controller(threading.Thread):
       return None
 
   def readEncoder(self):
-    encs = self._readEncoder()
-    if encs is not None:
-      return encs
-    if encs is not None:
-      return encs
-    if encs is not None:
-      return encs
+    n_tries = 5
+    for i in range(n_tries):
+      encs = self._readEncoder()
+      if encs is not None:
+        return encs
+    print ("failed to read encoder after %d tries!" % n_tries)
 
   def run(self):
     last_cmd = '?C' + '\r'
